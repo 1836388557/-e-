@@ -80,7 +80,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         // 移除token
-        removeToken() // must remove  token  first
+        removeToken()
         resetRouter()
         // 重置状态
         commit('RESET_STATE')

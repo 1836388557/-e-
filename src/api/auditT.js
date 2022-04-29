@@ -10,55 +10,55 @@ export function getGoodList(params) {
 }
 
 // 需求信息请求
-export function getNeedList(data) {
+export function getNeedList(params) {
   return request({
     url: '/vue-admin-template/auditT/need/list',
     method: 'get',
-    data
+    params
   })
 }
 
 // 拼车信息请求
-export function getPoolList(data) {
+export function getPoolList(params) {
   return request({
     url: '/vue-admin-template/auditT/pool/list',
     method: 'get',
-    data
+    params
   })
 }
 
 // 活动信息请求
-export function getActivityList(data) {
+export function getActivityList(params) {
   return request({
     url: '/vue-admin-template/auditT/activity/list',
     method: 'get',
-    data
+    params
   })
 }
 
 // 兼职信息请求
-export function getJobList(data) {
+export function getJobList(params) {
   return request({
     url: '/vue-admin-template/auditT/job/list',
     method: 'get',
-    data
+    params
   })
 }
 
 // 招领信息请求
-export function getFindList(data) {
+export function getFindList(params) {
   return request({
     url: '/vue-admin-template/auditT/find/list',
     method: 'get',
-    data
+    params
   })
 }
 
 // 遗失信息请求
-export function getLostList(data) {
+export function getLostList(params) {
   return request({
     url: '/vue-admin-template/auditT/lost/list',
     method: 'get',
-    data
+    params
   })
 }

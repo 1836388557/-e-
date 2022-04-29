@@ -40,7 +40,7 @@ export default {
         (item) => item.meta && item.meta.title
       )
 
-      console.log('matched:', matched)
+      // console.log('matched:', matched)
 
       const first = matched[0]
 
@@ -53,11 +53,11 @@ export default {
       }
 
       this.levelList = matched.filter((item) => item.meta && item.meta.title && item.meta.breadcrumb !== false)
-      console.log('levelList:', this.levelList)
+      // console.log('levelList:', this.levelList)
     },
     // 判断是不是首页（仪表盘）
     isDashboard(route) {
-      console.log('route:', route)
+      // console.log('route:', route)
       const name = route && route.name
       if (!name) {
         return false
@@ -67,8 +67,7 @@ export default {
       )
     },
     pathCompile(path) {
-      // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
-      console.log('this.$route:', this.$route)
+      // console.log('this.$route:', this.$route)
       const { params } = this.$route
       var toPath = pathToRegexp.compile(path)
       return toPath(params)

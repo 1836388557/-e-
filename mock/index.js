@@ -5,24 +5,27 @@ const user = require('./user')
 const table = require('./table')
 
 // 模拟数据
+const swiperT = require('./swiperT') // 管理员
 const adminT = require('./adminT') // 管理员
 const userT = require('./userT') //  用户
 const auditT = require('./auditT') // 审核
+const schoolT = require('./schoolT') // 学校
+const goodSortT = require('./goodSortT') // 商品分类
 
 const mocks = [
   ...user,
   ...table,
   ...adminT,
   ...userT,
-  ...auditT
+  ...auditT,
+  ...swiperT,
+  ...schoolT,
+  ...goodSortT
 ]
 
-// for front mock
-// please use it cautiously, it will redefine XMLHttpRequest,
-// which will cause many of your third-party libraries to be invalidated(like progress event).
 function mockXHR() {
-  // mock patch
-  // https://github.com/nuysoft/Mock/issues/300
+  // mock 补丁
+
   Mock.XHR.prototype.proxy_send = Mock.XHR.prototype.send
   Mock.XHR.prototype.send = function() {
     if (this.custom.xhr) {
@@ -40,7 +43,7 @@ function mockXHR() {
       let result = null
       if (respond instanceof Function) {
         const { body, type, url } = options
-        // https://expressjs.com/en/4x/api.html#req
+
         result = respond({
           method: type,
           body: JSON.parse(body),

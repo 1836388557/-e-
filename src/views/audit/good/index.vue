@@ -5,12 +5,58 @@
     <div class="good-search">
       <el-input
         v-model="listQuery.title"
-        placeholder="输入商品标题名"
-        style="flex: 1; margin-right: 4px"
+        placeholder="输入需求标题名"
+        style="width: 300px"
+        class="good-search-item"
         @keyup.enter.native="handleFilter"
       />
+      <el-select
+        v-model="listQuery.status"
+        placeholder="审核状态"
+        clearable
+        style="width: 110px"
+        class="good-search-item"
+      >
+        <el-option
+          v-for="item in status"
+          :key="item"
+          :label="item | statusFilterText"
+          :value="item"
+          @click.native="sortSelected(a=1,item)"
+        />
+      </el-select>
+      <el-select
+        v-model="listQuery.school"
+        placeholder="校区"
+        clearable
+        style="width: 110px"
+        class="good-search-item"
+      >
+        <el-option
+          v-for="item in school"
+          :key="item"
+          :label="item"
+          :value="item"
+          @click.native="sortSelected(a=2,item)"
+        />
+      </el-select>
+      <el-select
+        v-model="listQuery.type"
+        placeholder="类型"
+        clearable
+        style="width: 110px"
+        class="good-search-item"
+      >
+        <el-option
+          v-for="item in type"
+          :key="item"
+          :label="item"
+          :value="item"
+          @click.native="sortSelected(a=3,item)"
+        />
+      </el-select>
       <el-button
-        class="good-search-btn"
+        class="good-search-btn good-search-item"
         type="primary"
         icon="el-icon-search"
         @click="handleFilter"
@@ -56,11 +102,15 @@
       >
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | statusFilter">{{
-            scope.row.status == 0 ? "待审核" : scope.row.status == 1?"已通过":"未通过"
+            scope.row.status == 0
+              ? "待审核"
+              : scope.row.status == 1
+                ? "已通过"
+                : "未通过"
           }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         label="审核"
         align="center"
         width="120"
@@ -71,6 +121,7 @@
             <el-button
               size="mini"
               type="success"
+              style="width:70px;"
               @click.stop="auditCross(row, $index)"
             >
               通过
@@ -80,13 +131,14 @@
             <el-button
               size="mini"
               type="danger"
+              style="width:70px;"
               @click.stop="auditNCross(row, $index)"
             >
               不通过
             </el-button>
           </div>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <div class="page-total">
       共
@@ -101,11 +153,15 @@
       :limit.sync="listQuery.limit"
       @pagination="fetchData"
     />
-    <el-dialog title="商品详情" :visible.sync="dialogFormVisible" width="80%">
+    <el-dialog
+      title="商品详情"
+      :visible.sync="dialogFormVisible"
+      style="dialog"
+    >
       <div class="detail">
         <el-carousel height="30vw" :autoplay="false">
-          <el-carousel-item v-for="(item,index) in detail.images" :key="index">
-            <img :src="item" style="width:100%;height: auto;">
+          <el-carousel-item v-for="(item, index) in detail.images" :key="index">
+            <img :src="item" style="width: 100%; height: auto">
           </el-carousel-item>
         </el-carousel>
         <div>
@@ -121,15 +177,51 @@
           <div class="detail-info">{{ detail.createDate }}</div>
         </div>
         <div>
-          <div class="detail-head">状态</div>
+          <div class="detail-head">分类</div>
           <div class="detail-info">
-            <el-tag :type="detail.status | statusFilter">
-              {{ detail.status == 0 ? "待审核" : detail.status == 1?"已通过":"未通过" }}
+            <el-tag type="primary" class="detail-tag">
+              {{ detail.school }}
+            </el-tag>
+            <el-tag type="primary" class="detail-tag">
+              {{ detail.type }}
             </el-tag>
           </div>
         </div>
+        <div>
+          <div class="detail-head">状态</div>
+          <div class="detail-info">
+            <el-tag :type="detail.status | statusFilter">
+              {{
+                detail.status == 0
+                  ? "待审核"
+                  : detail.status == 1
+                    ? "已通过"
+                    : "未通过"
+              }}
+            </el-tag>
+          </div>
+        </div>
+        <div class="btn-box">
+          <el-button
+            size="mini"
+            type="success"
+            style="width: 70px"
+            :disabled="detail.status !== 0 ? true : false"
+            @click.stop="auditCross(detail.id)"
+          >
+            通过
+          </el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            style="width: 70px"
+            :disabled="detail.status !== 0 ? true : false"
+            @click.stop="auditNCross(detail.id)"
+          >
+            不通过
+          </el-button>
+        </div>
       </div>
-
     </el-dialog>
   </div>
 </template>
@@ -150,6 +242,14 @@ export default {
       }
       return statusMap[status]
     },
+    statusFilterText(status) {
+      const statusMap = {
+        0: '待审核',
+        1: '已通过',
+        2: '未通过'
+      }
+      return statusMap[status]
+    },
     titleFilter(val) {
       return val.slice(0, 10)
     },
@@ -165,23 +265,28 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        title: undefined
+        title: undefined,
+        status: undefined,
+        school: undefined,
+        type: undefined
       },
+      status: [0, 1, 2],
+      school: ['章贡校区', '黄金校区'],
+      type: ['衣服', '生活用品', '数码'],
       dialogFormVisible: false,
       detail: {}
     }
   },
-  watch: {
-
-  },
+  watch: {},
   created() {
     this.fetchData()
   },
   methods: {
     fetchData() {
       this.listLoading = true
+      // console.log(this.listQuery)
       getGoodList(this.listQuery).then((response) => {
-        console.log('response', response)
+        // console.log('response', response)
         this.list = response.data.items
         this.total = response.data.total
         this.listLoading = false
@@ -191,22 +296,36 @@ export default {
       this.listQuery.page = 1
       this.fetchData()
     },
+    sortSelected(a, value) {
+      // console.log(a, value)
+      if (a === 1) {
+        this.listQuery.status = value
+      } else if (a === 2) {
+        this.listQuery.school = value
+      } else {
+        this.listQuery.type = value
+      }
+    },
     getDetail(row) {
       // console.log(row)
       this.detail = row
       this.dialogFormVisible = true
     },
     auditCross() {
-      this.$notify({
-        title: '完成',
+      this.$message({
+        message: '完成',
         type: 'success'
       })
+      this.dialogFormVisible = false
+      this.detail = {}
     },
     auditNCross() {
-      this.$notify({
-        title: '完成',
+      this.$message({
+        message: '完成',
         type: 'success'
       })
+      this.dialogFormVisible = false
+      this.detail = {}
     }
   }
 }
@@ -220,9 +339,11 @@ export default {
     padding: 10px;
   }
   &-search {
-    display: flex;
-    justify-content: space-between;
+    display: inline-block;
     margin-bottom: 10px;
+    &-item {
+      margin: 4px 4px;
+    }
     &-btn {
       border-radius: 100px;
     }
@@ -233,7 +354,9 @@ export default {
 }
 
 .btn-box {
-  margin: 4px 0;
+  padding-top: 10px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .page-total {
@@ -245,43 +368,58 @@ export default {
   }
 }
 
-.detail{
-  padding:10px;
-  font-size: 12px;
-  &-head{
+::v-deep .el-dialog {
+  margin-bottom:15vh;
+  .detail {
+    &-head {
+      color: #606266;
+      line-height: 40px;
+      margin: 4px 0;
 
-    color: #606266;
-    line-height:30px;
-    margin:4px 0;
-    font-weight:900;
+      font-weight: 900;
+    }
+    &-info {
+      background: #eef1f6;
+      padding: 10px 20px;
+    }
+    &-tag{
+      margin:0 4px;
+
+    }
   }
-  &-info{
-    background: #eef1f6;
-    padding: 10px 20px;
+  @media screen and (min-width: 300px) {
+    width: 280px;
+    .detail {
+      &-head {
+        font-size: 15px;
+      }
+      &-info {
+        font-size: 13px;
+      }
+    }
+  }
+  @media screen and (min-width: 800px) {
+    width: 500px;
+    .detail {
+      &-head {
+        font-size: 17px;
+      }
+      &-info {
+        font-size: 14px;
+      }
+    }
+  }
+  @media screen and (min-width: 1200px) {
+    width: 800px;
+    .detail {
+      &-head {
+        font-size: 18px;
+      }
+      &-info {
+        font-size: 15px;
+      }
+    }
   }
 }
-
-// .item {
-//       border-bottom: 1PX #8d8d8d dashed;
-//       font-size: 12PX;
-//       line-height: 16PX;
-//       @media screen and (min-width: 576PX) {
-//         font-size: 14PX;
-//         line-height: 18PX;
-//       }
-// 	  @media screen and (min-width: 768PX) {
-//         font-size: 16PX;
-//         line-height: 28PX;
-//       }
-//       @media screen and (min-width: 992PX) {
-//         font-size: 16PX;
-//         line-height: 32PX;
-//       }
-//       @media screen and (min-width: 1200PX) {
-//         font-size: 18PX;
-//         line-height: 64PX;
-//       }
-// }
-
 </style>
 

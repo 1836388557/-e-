@@ -10,7 +10,7 @@ const count = 100
 
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
-    headImage: '@image',
+    // headImage: '@image',
     username: '@string(10,20)',
     password: '@string(10,20)',
     'status|1': [0, 1]

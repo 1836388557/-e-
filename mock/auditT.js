@@ -1,9 +1,4 @@
 const Mock = require('mockjs')
-/*
-  用户名  @string
-  密码    @string
-  状态    0 普通用户 1 管理员
-*/
 
 // 模拟数据
 
@@ -18,6 +13,8 @@ for (let i = 0; i < count; i++) {
     title: '@cword(30)',
     content: '@cword(300)',
     createDate: '@datetime',
+    'school|1': ['黄金校区', '章贡校区'],
+    'type|1': ['衣服', '生活用品', '数码'],
     'status|1': [0, 1, 2]
   }))
 }
@@ -30,6 +27,8 @@ for (let i = 0; i < count; i++) {
     title: '@cword(30)',
     content: '@cword(300)',
     createDate: '@datetime',
+    'school|1': ['黄金校区', '章贡校区'],
+    'type|1': ['衣服', '生活用品', '数码'],
     'status|1': [0, 1, 2]
   }))
 }
@@ -42,6 +41,7 @@ for (let i = 0; i < count; i++) {
     title: '@cword(30)',
     content: '@cword(300)',
     createDate: '@datetime',
+    'school|1': ['黄金校区', '章贡校区'],
     'status|1': [0, 1, 2]
   }))
 }
@@ -54,7 +54,8 @@ for (let i = 0; i < count; i++) {
     title: '@cword(30)',
     content: '@cword(300)',
     createDate: '@datetime',
-    'status|1': [0, 1]
+    'school|1': ['黄金校区', '章贡校区'],
+    'status|1': [0, 1, 2]
   }))
 }
 
@@ -66,7 +67,8 @@ for (let i = 0; i < count; i++) {
     title: '@cword(30)',
     content: '@cword(300)',
     createDate: '@datetime',
-    'status|1': [0, 1]
+    'school|1': ['黄金校区', '章贡校区'],
+    'status|1': [0, 1, 2]
   }))
 }
 
@@ -79,7 +81,8 @@ for (let i = 0; i < count; i++) {
     title: '@cword(30)',
     content: '@cword(300)',
     createDate: '@datetime',
-    'status|1': [0, 1]
+    'school|1': ['黄金校区', '章贡校区'],
+    'status|1': [0, 1, 2]
   }))
 }
 
@@ -92,7 +95,8 @@ for (let i = 0; i < count; i++) {
     title: '@cword(30)',
     content: '@cword(300)',
     createDate: '@datetime',
-    'status|1': [0, 1]
+    'school|1': ['黄金校区', '章贡校区'],
+    'status|1': [0, 1, 2]
   }))
 }
 
@@ -103,16 +107,21 @@ module.exports = [
     url: '/vue-admin-template/auditT/good/list',
     type: 'get',
     response: config => {
-      // console.log('config', config)
-      const { title, page = 1, limit = 20 } = config.query
+      const { title, type, school, status, page = 1, limit = 20 } = config.query
 
-      const mockList = goodList.filter(item => {
-        if (title && item.title.indexOf(title) < 0) return false
+      // console.log('config.query', config.query)
+      const mockList = needList.filter(item => {
+        if (school && item.school !== school && school !== undefined) return false
+        if (type && item.type !== type && type !== undefined) return false
+        if (item.status !== Number(status) && status !== undefined) return false
+        if (title && item.title.indexOf(title) < 0 && title !== undefined) return false
         return true
       })
 
+      // console.log(mockList)
       const pageList = mockList.filter((item, index) => index < limit * page && index >= limit * (page - 1))
       // console.log(pageList)
+
       return {
         code: 20000,
         data: {
@@ -127,11 +136,14 @@ module.exports = [
     url: '/vue-admin-template/auditT/need/list',
     type: 'get',
     response: config => {
-      // console.log('config', config)
-      const { title, page = 1, limit = 20 } = config.query
+      const { title, type, school, status, page = 1, limit = 20 } = config.query
 
+      // console.log('config.query', config.query)
       const mockList = needList.filter(item => {
-        if (title && item.title.indexOf(title) < 0) return false
+        if (school && item.school !== school && school !== undefined) return false
+        if (type && item.type !== type && type !== undefined) return false
+        if (item.status !== Number(status) && status !== undefined) return false
+        if (title && item.title.indexOf(title) < 0 && title !== undefined) return false
         return true
       })
 
@@ -152,10 +164,12 @@ module.exports = [
     type: 'get',
     response: config => {
       // console.log('config', config)
-      const { title, page = 1, limit = 20 } = config.query
+      const { title, school, status, page = 1, limit = 20 } = config.query
 
-      const mockList = poolList.filter(item => {
-        if (title && item.title.indexOf(title) < 0) return false
+      const mockList = needList.filter(item => {
+        if (school && item.school !== school && school !== undefined) return false
+        if (item.status !== Number(status) && status !== undefined) return false
+        if (title && item.title.indexOf(title) < 0 && title !== undefined) return false
         return true
       })
 
@@ -176,10 +190,12 @@ module.exports = [
     type: 'get',
     response: config => {
       // console.log('config', config)
-      const { title, page = 1, limit = 20 } = config.query
+      const { title, school, status, page = 1, limit = 20 } = config.query
 
-      const mockList = activityList.filter(item => {
-        if (title && item.title.indexOf(title) < 0) return false
+      const mockList = needList.filter(item => {
+        if (school && item.school !== school && school !== undefined) return false
+        if (item.status !== Number(status) && status !== undefined) return false
+        if (title && item.title.indexOf(title) < 0 && title !== undefined) return false
         return true
       })
 
@@ -200,10 +216,12 @@ module.exports = [
     type: 'get',
     response: config => {
       // console.log('config', config)
-      const { title, page = 1, limit = 20 } = config.query
+      const { title, school, status, page = 1, limit = 20 } = config.query
 
-      const mockList = jobList.filter(item => {
-        if (title && item.title.indexOf(title) < 0) return false
+      const mockList = needList.filter(item => {
+        if (school && item.school !== school && school !== undefined) return false
+        if (item.status !== Number(status) && status !== undefined) return false
+        if (title && item.title.indexOf(title) < 0 && title !== undefined) return false
         return true
       })
 
@@ -224,9 +242,10 @@ module.exports = [
     type: 'get',
     response: config => {
       // console.log('config', config)
-      const { title, page = 1, limit = 20 } = config.query
+      const { title, school, page = 1, limit = 20 } = config.query
 
-      const mockList = findList.filter(item => {
+      const mockList = needList.filter(item => {
+        if (school && item.school !== school) return false
         if (title && item.title.indexOf(title) < 0) return false
         return true
       })
@@ -248,9 +267,10 @@ module.exports = [
     type: 'get',
     response: config => {
       // console.log('config', config)
-      const { title, page = 1, limit = 20 } = config.query
+      const { title, school, page = 1, limit = 20 } = config.query
 
-      const mockList = lostList.filter(item => {
+      const mockList = needList.filter(item => {
+        if (school && item.school !== school) return false
         if (title && item.title.indexOf(title) < 0) return false
         return true
       })

@@ -33,11 +33,11 @@
       fit
       highlight-current-row
     >
-      <el-table-column prop="headImage" label="头像" width="80" class="head">
-        <template slot-scope="scope">
+      <el-table-column label="头像" width="80" class="head" align="center">
+        <template>
           <!--图片 高度固定 宽度适应 -->
           <img
-            :src="scope.row.headImage"
+            :src="img"
             alt=""
             style="height: 60px; width: 60px"
           >
@@ -62,11 +62,11 @@
       >
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | statusFilter">{{
-            scope.row.status == 0 ? "普通用户" : "管理员"
+            scope.row.status == 0 ? "管理员" : "超级管理员"
           }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         label="操作"
         align="center"
         width="120"
@@ -92,8 +92,8 @@
               解除
             </el-button>
           </div>
-        </template>
-      </el-table-column>
+        </template> -->
+      <!-- </el-table-column> -->
     </el-table>
     <div class="page-total">
       共
@@ -110,16 +110,16 @@
     />
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="80%">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="max-width:100%;">
-        <el-form-item label="头像" prop="headImage">
+        <!-- <el-form-item label="头像" prop="headImage">
           <Upload v-model="temp.headImage" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="用户名" prop="username">
           <el-input v-model="temp.username" type="username" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="temp.password" type="password" />
         </el-form-item>
-        <el-form-item label="是否管理员">
+        <el-form-item label="是否为超级管理管理员">
           <el-switch v-model="isAdmin" />
         </el-form-item>
       </el-form>
@@ -140,10 +140,10 @@
 import XHeader from '@/components/Header'
 import { getList, createAdmin } from '@/api/adminT'
 import Pagination from '@/components/Pagination'
-import Upload from '@/components/Upload/SingleImage'
+// import Upload from '@/components/Upload/SingleImage'
 export default {
   name: 'Admin',
-  components: { XHeader, Pagination, Upload },
+  components: { XHeader, Pagination },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -155,6 +155,7 @@ export default {
   },
   data() {
     return {
+      img: require('@/assets/logo.png'),
       list: null,
       total: 0,
       listLoading: true,
@@ -166,8 +167,8 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: '编辑',
+        create: '创建'
       },
       isAdmin: false,
       temp: {

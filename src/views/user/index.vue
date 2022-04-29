@@ -80,7 +80,7 @@
               v-if="row.status === 0"
               size="mini"
               type="warning"
-              @click="handleDelete(row, $index)"
+              @click="handleFreeze(row, $index,select=1)"
             >
               冻结
             </el-button>
@@ -88,7 +88,7 @@
               v-else
               size="mini"
               type="success"
-              @click="handleDelete(row, $index)"
+              @click="handleFreeze(row, $index,select=2)"
             >
               解封
             </el-button>
@@ -168,6 +168,20 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.fetchData()
+    },
+    handleFreeze(row, index, select) {
+      if (select === 1) {
+        this.list[index].status = 1
+      } else {
+        this.list[index].status = 0
+      }
+    },
+    handleDelete(row, index) {
+      this.list.splice(index, 1)
+      this.$message({
+        message: '删除成功',
+        type: 'success'
+      })
     }
   }
 }

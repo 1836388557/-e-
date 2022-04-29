@@ -6,7 +6,7 @@
 </template>
 
 <script>
-// doc: https://panjiachen.github.io/vue-element-admin-site/feature/component/svg-icon.html#usage
+
 // svg图标组件
 import { isExternal } from '@/utils/validate'
 

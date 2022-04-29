@@ -10,6 +10,7 @@
         </div>
       </div>
     </div>
+    <!-- action -->
     <el-upload
       :data="dataObj"
       :multiple="false"
@@ -17,7 +18,6 @@
       :on-success="handleImageSuccess"
       class="image-uploader"
       drag
-      action="https://httpbin.org/post"
     >
       <i class="el-icon-upload" />
       <div class="el-upload__text">
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { getToken } from '@/api/token'
+// import { getToken } from '@/api/token'
 
 export default {
   name: 'SingleImageUpload',
@@ -61,20 +61,20 @@ export default {
       this.emitInput(this.tempUrl)
     },
     beforeUpload() {
-      const _self = this
-      return new Promise((resolve, reject) => {
-        getToken().then(response => {
-          const key = response.data.qiniu_key
-          const token = response.data.qiniu_token
-          _self._data.dataObj.token = token
-          _self._data.dataObj.key = key
-          this.tempUrl = response.data.qiniu_url
-          resolve(true)
-        }).catch(err => {
-          console.log(err)
-          reject(false)
-        })
-      })
+      // const _self = this
+      // return new Promise((resolve, reject) => {
+      //   getToken().then(response => {
+      //     const key = response.data.qiniu_key
+      //     const token = response.data.qiniu_token
+      //     _self._data.dataObj.token = token
+      //     _self._data.dataObj.key = key
+      //     this.tempUrl = response.data.qiniu_url
+      //     resolve(true)
+      //   }).catch(err => {
+      //     console.log(err)
+      //     reject(false)
+      //   })
+      // })
     }
   }
 }

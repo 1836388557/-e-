@@ -6,11 +6,42 @@
       <el-input
         v-model="listQuery.title"
         placeholder="输入需求标题名"
-        style="flex: 1; margin-right: 4px"
+        style="width: 300px"
+        class="job-search-item"
         @keyup.enter.native="handleFilter"
       />
+      <el-select
+        v-model="listQuery.status"
+        placeholder="审核状态"
+        clearable
+        style="width: 110px"
+        class="job-search-item"
+      >
+        <el-option
+          v-for="item in status"
+          :key="item"
+          :label="item | statusFilterText"
+          :value="item"
+          @click.native="sortSelected(a=1,item)"
+        />
+      </el-select>
+      <el-select
+        v-model="listQuery.school"
+        placeholder="校区"
+        clearable
+        style="width: 110px"
+        class="job-search-item"
+      >
+        <el-option
+          v-for="item in school"
+          :key="item"
+          :label="item | statusFilterText"
+          :value="item"
+          @click.native="sortSelected(a=2,item)"
+        />
+      </el-select>
       <el-button
-        class="job-search-btn"
+        class="job-search-btn job-search-item"
         type="primary"
         icon="el-icon-search"
         @click="handleFilter"
@@ -56,35 +87,12 @@
       >
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | statusFilter">{{
-            scope.row.status == 0 ? "待审核" : scope.row.status == 1?"已通过":"未通过"
+            scope.row.status == 0
+              ? "待审核"
+              : scope.row.status == 1
+                ? "已通过"
+                : "未通过"
           }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="审核"
-        align="center"
-        width="120"
-        class-name="small-padding fixed-width"
-      >
-        <template slot-scope="{ row, $index }">
-          <div class="btn-box">
-            <el-button
-              size="mini"
-              type="success"
-              @click.stop="auditCross(row, $index)"
-            >
-              通过
-            </el-button>
-          </div>
-          <div class="btn-box">
-            <el-button
-              size="mini"
-              type="danger"
-              @click.stop="auditNCross(row, $index)"
-            >
-              不通过
-            </el-button>
-          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -116,14 +124,48 @@
           <div class="detail-info">{{ detail.createDate }}</div>
         </div>
         <div>
+          <div class="detail-head">分类</div>
+          <div class="detail-info">
+            <el-tag type="primary" class="detail-tag">
+              {{ detail.school }}
+            </el-tag>
+          </div>
+        </div>
+        <div>
           <div class="detail-head">状态</div>
           <div class="detail-info">
             <el-tag :type="detail.status | statusFilter">
-              {{ detail.status == 0 ? "待审核" : detail.status == 1?"已通过":"未通过" }}
-            </el-tag></div>
+              {{
+                detail.status == 0
+                  ? "待审核"
+                  : detail.status == 1
+                    ? "已通过"
+                    : "未通过"
+              }}
+            </el-tag>
+          </div>
+        </div>
+        <div class="btn-box">
+          <el-button
+            size="mini"
+            type="success"
+            style="width: 70px"
+            :disabled="detail.status !== 0 ? true : false"
+            @click.stop="auditCross(detail.id)"
+          >
+            通过
+          </el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            style="width: 70px"
+            :disabled="detail.status !== 0 ? true : false"
+            @click.stop="auditNCross(detail.id)"
+          >
+            不通过
+          </el-button>
         </div>
       </div>
-
     </el-dialog>
   </div>
 </template>
@@ -144,6 +186,14 @@ export default {
       }
       return statusMap[status]
     },
+    statusFilterText(status) {
+      const statusMap = {
+        0: '待审核',
+        1: '已通过',
+        2: '未通过'
+      }
+      return statusMap[status]
+    },
     titleFilter(val) {
       return val.slice(0, 10)
     },
@@ -159,15 +209,17 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        title: undefined
+        title: undefined,
+        status: undefined,
+        school: undefined
       },
+      status: [0, 1, 2],
+      school: ['章贡校区', '黄金校区'],
       dialogFormVisible: false,
       detail: {}
     }
   },
-  watch: {
-
-  },
+  watch: {},
   created() {
     this.fetchData()
   },
@@ -184,6 +236,14 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.fetchData()
+    },
+    sortSelected(a, value) {
+      // console.log(a, value)
+      if (a === 1) {
+        this.listQuery.status = value
+      } else {
+        this.listQuery.school = value
+      }
     },
     getDetail(row) {
       // console.log(row)
@@ -214,9 +274,11 @@ export default {
     padding: 10px;
   }
   &-search {
-    display: flex;
-    justify-content: space-between;
+    display: inline-block;
     margin-bottom: 10px;
+    &-item {
+      margin: 4px 4px;
+    }
     &-btn {
       border-radius: 100px;
     }
@@ -239,42 +301,77 @@ export default {
   }
 }
 
-.detail{
-  padding:10px;
+.detail {
+  padding: 10px;
   font-size: 12px;
-  &-head{
-
+  &-head {
     color: #606266;
-    line-height:30px;
-    margin:4px 0;
-    font-weight:900;
+    line-height: 30px;
+    margin: 4px 0;
+    font-weight: 900;
   }
-  &-info{
+  &-info {
     background: #eef1f6;
     padding: 10px 20px;
   }
 }
 
-// .item {
-//       border-bottom: 1PX #8d8d8d dashed;
-//       font-size: 12PX;
-//       line-height: 16PX;
-//       @media screen and (min-width: 576PX) {
-//         font-size: 14PX;
-//         line-height: 18PX;
-//       }
-// 	  @media screen and (min-width: 768PX) {
-//         font-size: 16PX;
-//         line-height: 28PX;
-//       }
-//       @media screen and (min-width: 992PX) {
-//         font-size: 16PX;
-//         line-height: 32PX;
-//       }
-//       @media screen and (min-width: 1200PX) {
-//         font-size: 18PX;
-//         line-height: 64PX;
-//       }
-// }
+.btn-box {
+  padding-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
 
+::v-deep .el-dialog {
+  margin-bottom: 15vh;
+  .detail {
+    &-head {
+      color: #606266;
+      line-height: 40px;
+      margin: 4px 0;
+
+      font-weight: 900;
+    }
+    &-info {
+      background: #eef1f6;
+      padding: 10px 20px;
+    }
+  }
+  @media screen and (min-width: 300px) {
+    width: 280px;
+    .detail {
+      &-head {
+        font-size: 15px;
+      }
+      &-info {
+        font-size: 13px;
+      }
+    }
+  }
+  @media screen and (min-width: 800px) {
+    width: 500px;
+    .detail {
+      &-head {
+        font-size: 17px;
+      }
+      &-info {
+        font-size: 14px;
+      }
+      &-tag {
+        margin: 0 4px;
+      }
+    }
+  }
+  @media screen and (min-width: 1200px) {
+    width: 800px;
+    .detail {
+      &-head {
+        font-size: 18px;
+      }
+      &-info {
+        font-size: 15px;
+      }
+    }
+  }
+}
 </style>
