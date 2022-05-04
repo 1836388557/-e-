@@ -4,7 +4,7 @@
 
     <div class="good-search">
       <el-input
-        v-model="listQuery.title"
+        v-model="listQuery.param"
         placeholder="输入需求标题名"
         style="width: 300px"
         class="good-search-item"
@@ -22,10 +22,10 @@
           :key="item"
           :label="item | statusFilterText"
           :value="item"
-          @click.native="sortSelected(a=1,item)"
+          @click.native="sortSelected((a = 1), item)"
         />
       </el-select>
-      <el-select
+      <!-- <el-select
         v-model="listQuery.school"
         placeholder="校区"
         clearable
@@ -54,7 +54,7 @@
           :value="item"
           @click.native="sortSelected(a=3,item)"
         />
-      </el-select>
+      </el-select> -->
       <el-button
         class="good-search-btn good-search-item"
         type="primary"
@@ -73,25 +73,25 @@
       highlight-current-row
       @row-click="getDetail"
     >
-      <el-table-column prop="title" label="标题" align="center">
+      <el-table-column prop="pdName" label="标题" align="center">
         <template slot-scope="scope">
-          {{ scope.row.title | titleFilter }}
+          {{ scope.row.pdName | titleFilter }}
         </template>
       </el-table-column>
-      <el-table-column prop="content" label="内容" align="center">
+      <el-table-column prop="pdDesc" label="内容" align="center">
         <template slot-scope="scope">
-          {{ scope.row.content | contentFilter }}
+          {{ scope.row.pdDesc | contentFilter }}
         </template>
       </el-table-column>
       <el-table-column
         align="center"
-        prop="createDate"
+        prop="pdCreateTime"
         label="提交日期"
         width="200"
       >
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.createDate }}</span>
+          <span>{{ scope.row.pdCreateTime }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -101,44 +101,15 @@
         align="center"
       >
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{
-            scope.row.status == 0
+          <el-tag :type="scope.row.pdStatus | statusFilter">{{
+            scope.row.pdStatus == 0
               ? "待审核"
-              : scope.row.status == 1
-                ? "已通过"
-                : "未通过"
+              : scope.row.pdStatus == 1
+                ? "未通过"
+                : "已通过"
           }}</el-tag>
         </template>
       </el-table-column>
-      <!-- <el-table-column
-        label="审核"
-        align="center"
-        width="120"
-        class-name="small-padding fixed-width"
-      >
-        <template slot-scope="{ row, $index }">
-          <div class="btn-box">
-            <el-button
-              size="mini"
-              type="success"
-              style="width:70px;"
-              @click.stop="auditCross(row, $index)"
-            >
-              通过
-            </el-button>
-          </div>
-          <div class="btn-box">
-            <el-button
-              size="mini"
-              type="danger"
-              style="width:70px;"
-              @click.stop="auditNCross(row, $index)"
-            >
-              不通过
-            </el-button>
-          </div>
-        </template>
-      </el-table-column> -->
     </el-table>
     <div class="page-total">
       共
@@ -150,7 +121,7 @@
       :total="total"
       :page.sync="listQuery.page"
       layout="prev,next,sizes,jumper"
-      :limit.sync="listQuery.limit"
+      :limit.sync="listQuery.pageSize"
       @pagination="fetchData"
     />
     <el-dialog
@@ -159,44 +130,59 @@
       style="dialog"
     >
       <div class="detail">
-        <el-carousel height="30vw" :autoplay="false">
-          <el-carousel-item v-for="(item, index) in detail.images" :key="index">
-            <img :src="item" style="width: 100%; height: auto">
+        <el-carousel height="80vh" :autoplay="false">
+          <el-carousel-item v-for="(item, index) in detail.pdPic" :key="index">
+            <div
+              style="
+                width: auto;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+              "
+            >
+              <el-image
+                ref="preview"
+                :src="item"
+                :preview-src-list="detail.pdPic"
+                style="height: 100%"
+                @click.stop="handleClickItem"
+              />
+            </div>
           </el-carousel-item>
         </el-carousel>
         <div>
           <div class="detail-head">标题</div>
-          <div class="detail-info">{{ detail.title }}</div>
+          <div class="detail-info">{{ detail.pdName }}</div>
         </div>
         <div>
           <div class="detail-head">内容</div>
-          <div class="detail-info">{{ detail.content }}</div>
+          <div class="detail-info">{{ detail.pdDesc }}</div>
         </div>
         <div>
           <div class="detail-head">提交日期</div>
-          <div class="detail-info">{{ detail.createDate }}</div>
+          <div class="detail-info">{{ detail.pdCreateTime }}</div>
         </div>
         <div>
           <div class="detail-head">分类</div>
           <div class="detail-info">
             <el-tag type="primary" class="detail-tag">
-              {{ detail.school }}
+              {{ detail.pdArea }}
             </el-tag>
             <el-tag type="primary" class="detail-tag">
-              {{ detail.type }}
+              {{ detail.pdCategory }}
             </el-tag>
           </div>
         </div>
         <div>
           <div class="detail-head">状态</div>
           <div class="detail-info">
-            <el-tag :type="detail.status | statusFilter">
+            <el-tag :type="detail.pdStatus | statusFilter">
               {{
-                detail.status == 0
+                detail.pdStatus == 0
                   ? "待审核"
-                  : detail.status == 1
-                    ? "已通过"
-                    : "未通过"
+                  : detail.pdStatus == 1
+                    ? "未通过"
+                    : "已通过"
               }}
             </el-tag>
           </div>
@@ -206,8 +192,8 @@
             size="mini"
             type="success"
             style="width: 70px"
-            :disabled="detail.status !== 0 ? true : false"
-            @click.stop="auditCross(detail.id)"
+            :disabled="detail.pdStatus !== 0 ? true : false"
+            @click.stop="auditCross(detail.pdId)"
           >
             通过
           </el-button>
@@ -215,8 +201,8 @@
             size="mini"
             type="danger"
             style="width: 70px"
-            :disabled="detail.status !== 0 ? true : false"
-            @click.stop="auditNCross(detail.id)"
+            :disabled="detail.pdStatus !== 0 ? true : false"
+            @click.stop="auditNCross(detail.pdId)"
           >
             不通过
           </el-button>
@@ -229,7 +215,10 @@
 <script>
 import XHeader from '@/components/Header'
 import Pagination from '@/components/Pagination'
-import { getGoodList } from '@/api/auditT'
+// import { getGoodList } from '@/api/test/auditT'
+import { commodityCheck, getCommodity } from '@/api/audit/commodity'
+import { getCampus } from '@/api/campus'
+import { getType } from '@/api/commodityType'
 export default {
   name: 'Good',
   components: { XHeader, Pagination },
@@ -237,16 +226,16 @@ export default {
     statusFilter(status) {
       const statusMap = {
         0: 'warning',
-        1: 'success',
-        2: 'danger'
+        1: 'danger',
+        2: 'success'
       }
       return statusMap[status]
     },
     statusFilterText(status) {
       const statusMap = {
         0: '待审核',
-        1: '已通过',
-        2: '未通过'
+        1: '未通过',
+        2: '已通过'
       }
       return statusMap[status]
     },
@@ -262,17 +251,10 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        title: undefined,
-        status: undefined,
-        school: undefined,
-        type: undefined
-      },
+      listQuery: { page: 1, pageSize: 20, param: '', status: '' },
       status: [0, 1, 2],
-      school: ['章贡校区', '黄金校区'],
-      type: ['衣服', '生活用品', '数码'],
+      // school: [],
+      // type: ['衣服', '生活用品', '数码'],
       dialogFormVisible: false,
       detail: {}
     }
@@ -282,13 +264,41 @@ export default {
     this.fetchData()
   },
   methods: {
+    handleClickItem() {
+      this.$nextTick(() => {
+        const domImageMask = document.querySelector('.el-image-viewer__mask')
+        // 获取遮罩层dom
+        if (!domImageMask) {
+          return
+        }
+        domImageMask.addEventListener('click', () => {
+          // 点击遮罩层时调用关闭按钮的 click 事件
+          document.querySelector('.el-image-viewer__close').click()
+        })
+      })
+    },
+    // 获取校区
+    getCampusList() {
+      getCampus().then(res => {
+        this.school = res.data.data
+      })
+    },
+    // 获取商品类型
+    getTypeList() {
+      getType().then(res => {
+        this.type = res.data.data
+      })
+    },
     fetchData() {
       this.listLoading = true
-      // console.log(this.listQuery)
-      getGoodList(this.listQuery).then((response) => {
-        // console.log('response', response)
-        this.list = response.data.items
-        this.total = response.data.total
+      getCommodity(this.listQuery).then((res) => {
+        if (res.data.code === 204) {
+          this.list = res.data.data
+          this.total = 0
+        } else {
+          this.list = res.data.data.list
+          this.total = res.data.data.total
+        }
         this.listLoading = false
       })
     },
@@ -299,33 +309,49 @@ export default {
     sortSelected(a, value) {
       // console.log(a, value)
       if (a === 1) {
-        this.listQuery.status = value
-      } else if (a === 2) {
-        this.listQuery.school = value
-      } else {
-        this.listQuery.type = value
+        this.listQuery.status = Number(value)
       }
+      this.handleFilter()
+      // else if (a === 2) {
+      //   this.listQuery.school = value
+      // } else {
+      //   this.listQuery.type = value
+      // }
     },
     getDetail(row) {
-      // console.log(row)
+      console.log(row)
       this.detail = row
+      const imglist = this.detail.pdPic.split(',')
+      console.log(imglist)
+
+      this.detail.pdPic = imglist.map((i, idx) => {
+        i = this.$baseUrl + i
+        console.log(i)
+        return i
+      })
       this.dialogFormVisible = true
     },
-    auditCross() {
-      this.$message({
-        message: '完成',
-        type: 'success'
+    auditCross(id) {
+      commodityCheck({ flag: 2, id: Number(id) }).then(res => {
+        this.fetchData()
+        this.$message({
+          message: '审核通过',
+          type: 'success'
+        })
+        this.dialogFormVisible = false
+        this.detail = {}
       })
-      this.dialogFormVisible = false
-      this.detail = {}
     },
-    auditNCross() {
-      this.$message({
-        message: '完成',
-        type: 'success'
+    auditNCross(id) {
+      commodityCheck({ flag: 1, id: Number(id) }).then(res => {
+        this.fetchData()
+        this.$message({
+          message: '审核不通过',
+          type: 'success'
+        })
+        this.dialogFormVisible = false
+        this.detail = {}
       })
-      this.dialogFormVisible = false
-      this.detail = {}
     }
   }
 }
@@ -369,7 +395,7 @@ export default {
 }
 
 ::v-deep .el-dialog {
-  margin-bottom:15vh;
+  margin-bottom: 15vh;
   .detail {
     &-head {
       color: #606266;
@@ -382,9 +408,8 @@ export default {
       background: #eef1f6;
       padding: 10px 20px;
     }
-    &-tag{
-      margin:0 4px;
-
+    &-tag {
+      margin: 0 4px;
     }
   }
   @media screen and (min-width: 300px) {

@@ -5,9 +5,9 @@
       <el-form-item label="通告标题">
         <el-input v-model="form.title" />
       </el-form-item>
-      <el-form-item label="通告图片">
+      <!-- <el-form-item label="通告图片">
         <Upload v-model="form.image_uri" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="通告内容">
         <el-input v-model="form.content" type="textarea" />
       </el-form-item>
@@ -21,10 +21,11 @@
 
 <script>
 import XHeader from '@/components/Header'
-import Upload from '@/components/Upload/SingleImage'
+// import Upload from '@/components/Upload/SingleImage'
+import { publishMess } from '@/api/message'
 export default {
   name: 'SwiperUpload',
-  components: { Upload, XHeader },
+  components: { XHeader },
   filters: {
 
   },
@@ -35,7 +36,6 @@ export default {
       listLoading: true,
       form: {
         title: '',
-        image_uri: '',
         content: ''
       }
     }
@@ -47,8 +47,20 @@ export default {
 
   },
   methods: {
+    initForm() {
+      return {
+        title: '',
+        content: ''
+      }
+    },
     onSubmit() {
-      this.$message('提交!')
+      publishMess().then(res => {
+        this.$message({
+          message: '发布成功!',
+          type: 'success'
+        })
+        this.form = this.initForm()
+      })
     },
     onCancel() {
       this.$message({

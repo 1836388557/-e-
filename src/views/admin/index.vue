@@ -2,12 +2,12 @@
   <div class="admin-container">
     <XHeader title="管理员管理" />
     <div class="admin-search">
-      <el-input
+      <!-- <el-input
         v-model="listQuery.username"
         placeholder="输入用户名"
-        style="flex: 1; margin-right: 4px;margin-bottom:10px;"
+        style="flex: 1; margin-right: 4px; margin-bottom: 10px"
         @keyup.enter.native="handleFilter"
-      />
+      /> -->
       <el-button
         class="admin-search-btn"
         type="primary"
@@ -36,22 +36,23 @@
       <el-table-column label="头像" width="80" class="head" align="center">
         <template>
           <!--图片 高度固定 宽度适应 -->
-          <img
-            :src="img"
-            alt=""
-            style="height: 60px; width: 60px"
-          >
+          <img :src="img" alt="" style="height: 60px; width: 60px">
         </template>
       </el-table-column>
 
-      <el-table-column prop="username" label="用户名" align="center">
+      <el-table-column prop="adUsername" label="用户名" align="center">
         <template slot-scope="scope">
-          {{ scope.row.username }}
+          {{ scope.row.adUsername }}
         </template>
       </el-table-column>
-      <el-table-column prop="password" label="密码" align="center">
+      <el-table-column prop="adPassword" label="密码" align="center">
         <template slot-scope="scope">
-          {{ scope.row.password }}
+          {{ scope.row.adPassword }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="adEmail" label="邮箱" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.adEmail }}
         </template>
       </el-table-column>
       <el-table-column
@@ -61,39 +62,33 @@
         align="center"
       >
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{
-            scope.row.status == 0 ? "管理员" : "超级管理员"
+          <el-tag :type="scope.row.adRole | statusFilter">{{
+            scope.row.adRole == "admin" ? "管理员" : "超级管理员"
           }}</el-tag>
         </template>
       </el-table-column>
-      <!-- <el-table-column
-        label="操作"
-        align="center"
-        width="120"
-        class-name="small-padding fixed-width"
-      >
+      <el-table-column prop="adId" label="密码" align="center">
         <template slot-scope="{ row, $index }">
-          <div v-if="row.status === 0" class="btn-box">
+          <div class="btn-box">
             <el-button
               size="mini"
               type="primary"
-              @click="handleDelete(row, $index)"
+              @click="handleModify(row, $index)"
             >
-              分配
+              编辑
             </el-button>
           </div>
-
-          <div v-else class="btn-box">
+          <div class="btn-box">
             <el-button
               size="mini"
               type="danger"
               @click="handleDelete(row, $index)"
             >
-              解除
+              删除
             </el-button>
           </div>
-        </template> -->
-      <!-- </el-table-column> -->
+        </template>
+      </el-table-column>
     </el-table>
     <div class="page-total">
       共
@@ -105,50 +100,73 @@
       :total="total"
       :page.sync="listQuery.page"
       layout="prev,next,sizes,jumper"
-      :limit.sync="listQuery.limit"
+      :limit.sync="listQuery.pageSize"
       @pagination="fetchData"
     />
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="80%">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="max-width:100%;">
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
+      width="80%"
+    >
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="temp"
+        label-position="left"
+        label-width="70px"
+        style="max-width: 100%"
+      >
         <!-- <el-form-item label="头像" prop="headImage">
           <Upload v-model="temp.headImage" />
         </el-form-item> -->
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="temp.username" type="username" />
+        <el-form-item v-if="temp.adId" label="ID" prop="adId">
+          <el-input v-model="temp.adId" type="email" />
         </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="temp.password" type="password" />
+        <el-form-item label="用户名" prop="adUsername">
+          <el-input v-model="temp.adUsername" type="username" />
+        </el-form-item>
+        <el-form-item label="密码" prop="adPassword">
+          <el-input v-model="temp.adPassword" type="password" />
+        </el-form-item>
+        <el-form-item label="邮箱" prop="adEmail">
+          <el-input v-model="temp.adEmail" type="email" />
         </el-form-item>
         <el-form-item label="是否为超级管理管理员">
           <el-switch v-model="isAdmin" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():null">
+        <el-button @click="dialogFormVisible = false"> 取消 </el-button>
+        <el-button
+          type="primary"
+          @click="dialogStatus === 'create' ? createData() : modifyData()"
+        >
           确定
         </el-button>
       </div>
     </el-dialog>
   </div>
-
 </template>
 
 <script>
 import XHeader from '@/components/Header'
-import { getList, createAdmin } from '@/api/adminT'
+// import { getList, createAdmin } from '@/api/test/adminT'
 import Pagination from '@/components/Pagination'
 // import Upload from '@/components/Upload/SingleImage'
+import {
+  getManager,
+  modifyManager,
+  addManager,
+  deleteManager
+} from '@/api/adminCtrl'
 export default {
   name: 'Admin',
   components: { XHeader, Pagination },
   filters: {
     statusFilter(status) {
       const statusMap = {
-        0: 'info',
-        1: ''
+        root: '',
+        admin: 'info'
       }
       return statusMap[status]
     }
@@ -159,11 +177,7 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        username: undefined
-      },
+      listQuery: { page: 1, pageSize: 20 },
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -171,15 +185,15 @@ export default {
         create: '创建'
       },
       isAdmin: false,
-      temp: {
-        headImage: '',
-        username: '',
-        password: '',
-        status: 0
-      },
+      temp: { adEmail: '', adPassword: '', adRole: 'admin', adUsername: '' },
       rules: {
-        username: [{ required: true, message: '请填写用户名', trigger: 'change' }],
-        password: [{ required: true, message: '请填写密码', trigger: 'change' }],
+        username: [
+          { required: true, message: '请填写用户名', trigger: 'change' }
+        ],
+        password: [
+          { required: true, message: '请填写密码', trigger: 'change' }
+        ],
+        email: [{ required: true, message: '请填写密码', trigger: 'change' }],
         status: [{ required: true, message: '请填写状态', trigger: 'blur' }]
       }
     }
@@ -187,12 +201,11 @@ export default {
   watch: {
     isAdmin(val) {
       if (val) {
-        this.temp.status = 1
+        this.temp.adRole = 'root'
       } else {
-        this.temp.status = 0
+        this.temp.adRole = 'admin'
       }
     }
-
   },
   created() {
     this.fetchData()
@@ -200,10 +213,14 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getList(this.listQuery).then((response) => {
-        console.log('response', response)
-        this.list = response.data.items
-        this.total = response.data.total
+      getManager(this.listQuery).then((res) => {
+        if (res.data.code === 204) {
+          this.list = res.data.data
+          this.total = 0
+        } else {
+          this.list = res.data.data.list
+          this.total = res.data.data.total
+        }
         this.listLoading = false
       })
     },
@@ -212,19 +229,36 @@ export default {
       this.fetchData()
     },
     resetTemp() {
-      this.temp = {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        type: ''
+      if (this.dialogStatus === 'create') {
+        this.temp = {
+          adEmail: '',
+          adPassword: '',
+          adRole: 'admin',
+          adUsername: ''
+        }
+      } else {
+        this.temp = {
+          adId: '',
+          adEmail: '',
+          adPassword: '',
+          adRole: 'admin',
+          adUsername: ''
+        }
       }
     },
-    handleCreate() {
+    handleModify(row, index) {
+      this.dialogStatus = 'update'
       this.resetTemp()
+      this.temp.adId = row.adId
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    handleCreate() {
       this.dialogStatus = 'create'
+      this.resetTemp()
+      console.log(this.temp)
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -233,17 +267,38 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createAdmin(this.temp).then(() => {
-            this.list.unshift(this.temp)
+          addManager(this.temp).then(() => {
+            this.fetchData()
             this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
+            this.$message({
               message: '创建成功',
-              type: 'success',
-              duration: 2000
+              type: 'success'
             })
           })
         }
+      })
+    },
+    modifyData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          modifyManager(this.temp).then((res) => {
+            this.fetchData()
+            this.dialogFormVisible = false
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+          })
+        }
+      })
+    },
+    handleDelete(row, idx) {
+      deleteManager({ adId: row.adId }).then((res) => {
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
+        this.fetchData()
       })
     }
   }
@@ -287,7 +342,7 @@ export default {
 ::v-deep .cell {
   text-overflow: unset !important;
 }
-::v-deep .el-form-item__label{
-  width:fit-content !important;
+::v-deep .el-form-item__label {
+  width: fit-content !important;
 }
 </style>

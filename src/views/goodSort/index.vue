@@ -15,14 +15,14 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="title">
+      <el-table-column align="center" label="标题">
         <template slot-scope="scope">
-          {{ scope.row.title }}
+          {{ scope.row.pacName }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" width="200px;">
         <template slot-scope="scope">
-          {{ scope.row.createTime }}
+          {{ scope.row.pacCreateTime }}
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
@@ -38,7 +38,8 @@
 
 <script>
 import XHeader from '@/components/Header'
-import { getList } from '@/api/goodSortT'
+// import { getList } from '@/api/test/goodSortT'
+import { uploadType, deleteType, getType } from '@/api/commodityType'
 export default {
   name: 'SwiperUpload',
   components: { XHeader },
@@ -62,41 +63,30 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getList().then(response => {
+      getType().then(response => {
         console.log('response', response)
-        this.list = response.data.items
+        this.list = response.data.data
         this.listLoading = false
       })
     },
     onSubmit() {
-      this.$message({
-        message: '添加成功',
-        type: 'success'
+      uploadType({ pacName: this.sortName }).then(res => {
+        this.$message({
+          message: '添加成功',
+          type: 'success'
+        })
+        this.fetchData()
+        this.sortName = ''
       })
-
-      const date = new Date()
-      const Y = date.getFullYear()
-      const M = date.getMonth() + 1
-      const d = date.getDate()
-      let h = date.getHours()
-      if (h < 10) {
-        h = '0' + h
-      }
-      const m = date.getMinutes()
-      const s = date.getSeconds()
-      const createTime = Y + '-' + M + '-' + d + ' ' + h + ':' + m + ':' + s
-      this.list.unshift({
-        createTime: createTime,
-        title: this.sortName
-      })
-      this.sortName = ''
     },
     handleDelete(row, index) {
-      this.$message({
-        message: '删除成功',
-        type: 'success'
+      deleteType({ pacId: row.pacId }).then(res => {
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
+        this.fetchData()
       })
-      this.list.splice(index, 1)
     }
   }
 }

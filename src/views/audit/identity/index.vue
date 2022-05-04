@@ -1,13 +1,13 @@
 <template>
-  <div class="job-container">
-    <XHeader title="兼职审核" />
+  <div class="identity-container">
+    <XHeader title="认证审核" />
 
-    <div class="job-search">
+    <div class="identity-search">
       <el-input
         v-model="listQuery.param"
-        placeholder="输入需求标题名"
+        placeholder="输入申请者昵称"
         style="width: 300px"
-        class="job-search-item"
+        class="identity-search-item"
         @keyup.enter.native="handleFilter"
       />
       <el-select
@@ -15,14 +15,14 @@
         placeholder="审核状态"
         clearable
         style="width: 110px"
-        class="job-search-item"
+        class="identity-search-item"
       >
         <el-option
           v-for="item in status"
           :key="item"
           :label="item | statusFilterText"
           :value="item"
-          @click.native="sortSelected(a=1,item)"
+          @click.native="sortSelected((a = 1), item)"
         />
       </el-select>
       <!-- <el-select
@@ -30,18 +30,33 @@
         placeholder="校区"
         clearable
         style="width: 110px"
-        class="job-search-item"
+        class="identity-search-item"
       >
         <el-option
           v-for="item in school"
           :key="item"
-          :label="item | statusFilterText"
+          :label="item"
           :value="item"
           @click.native="sortSelected(a=2,item)"
         />
+      </el-select>
+      <el-select
+        v-model="listQuery.type"
+        placeholder="类型"
+        clearable
+        style="width: 110px"
+        class="identity-search-item"
+      >
+        <el-option
+          v-for="item in type"
+          :key="item"
+          :label="item"
+          :value="item"
+          @click.native="sortSelected(a=3,item)"
+        />
       </el-select> -->
       <el-button
-        class="job-search-btn job-search-item"
+        class="identity-search-btn identity-search-item"
         type="primary"
         icon="el-icon-search"
         @click="handleFilter"
@@ -58,25 +73,31 @@
       highlight-current-row
       @row-click="getDetail"
     >
-      <el-table-column prop="title" label="标题" align="center">
+      <el-table-column label="申请者ID" align="center">
         <template slot-scope="scope">
-          {{ scope.row.ptTitle | titleFilter }}
+          {{ scope.row.arUserId | titleFilter }}
         </template>
       </el-table-column>
-      <el-table-column prop="content" label="内容" align="center">
+      <!-- 头像 userIcon-->
+      <el-table-column label="头像" width="80" class="head" align="center">
         <template slot-scope="scope">
-          {{ scope.row.ptContent | contentFilter }}
+          <!--图片 高度固定 宽度适应 -->
+          <img :src="scope.row.arUserIcon" alt="" style="height: 60px; width: 60px">
+        </template>
+      </el-table-column>
+      <el-table-column label="申请者昵称" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.arUserNick | contentFilter }}
         </template>
       </el-table-column>
       <el-table-column
         align="center"
-        prop="createDate"
-        label="提交日期"
+        label="申请时间"
         width="200"
       >
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.ptCreateTime }}</span>
+          <span>{{ scope.row.arCreateTime }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -86,10 +107,10 @@
         align="center"
       >
         <template slot-scope="scope">
-          <el-tag :type="scope.row.ptStatus | statusFilter">{{
-            scope.row.ptStatus == 0
+          <el-tag :type="scope.row.arStatus | statusFilter">{{
+            scope.row.arStatus == 0
               ? "待审核"
-              : scope.row.ptStatus == 1
+              : scope.row.arStatus == 1
                 ? "未通过"
                 : "已通过"
           }}</el-tag>
@@ -109,49 +130,40 @@
       :limit.sync="listQuery.pageSize"
       @pagination="fetchData"
     />
-    <el-dialog title="兼职详情" :visible.sync="dialogFormVisible" width="80%">
+    <el-dialog
+      title="证明材料"
+      :visible.sync="dialogFormVisible"
+      style="dialog"
+    >
       <div class="detail">
-        <div>
-          <div class="detail-head">标题</div>
-          <div class="detail-info">{{ detail.ptTitle }}</div>
-        </div>
-        <div>
-          <div class="detail-head">内容</div>
-          <div class="detail-info">{{ detail.ptContent }}</div>
-        </div>
-        <div>
-          <div class="detail-head">提交日期</div>
-          <div class="detail-info">{{ detail.ptCreateTime }}</div>
-        </div>
-        <div>
-          <div class="detail-head">分类</div>
-          <div class="detail-info">
-            <el-tag type="primary" class="detail-tag">
-              {{ detail.ptCampus }}
-            </el-tag>
-          </div>
-        </div>
-        <div>
-          <div class="detail-head">状态</div>
-          <div class="detail-info">
-            <el-tag :type="detail.ptStatus | statusFilter">
-              {{
-                detail.ptStatus == 0
-                  ? "待审核"
-                  : detail.ptStatus == 1
-                    ? "未通过"
-                    : "已通过"
-              }}
-            </el-tag>
-          </div>
-        </div>
+        <el-carousel height="80vh" :autoplay="false">
+          <el-carousel-item v-for="(item, index) in detail.arPic" :key="index">
+            <div
+              style="
+                width: auto;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+              "
+            >
+              <el-image
+                ref="preview"
+                :src="item"
+                :preview-src-list="detail.arPic"
+                style="height: 100%"
+                @click.stop="handleClickItem"
+              />
+            </div>
+          </el-carousel-item>
+        </el-carousel>
+
         <div class="btn-box">
           <el-button
             size="mini"
             type="success"
             style="width: 70px"
-            :disabled="detail.ptStatus !== 0 ? true : false"
-            @click.stop="auditCross(detail.ptId)"
+            :disabled="detail.arStatus !== 0 ? true : false"
+            @click.stop="auditCross(detail)"
           >
             通过
           </el-button>
@@ -159,8 +171,8 @@
             size="mini"
             type="danger"
             style="width: 70px"
-            :disabled="detail.ptStatus !== 0 ? true : false"
-            @click.stop="auditNCross(detail.ptId)"
+            :disabled="detail.arStatus !== 0 ? true : false"
+            @click.stop="auditNCross(detail)"
           >
             不通过
           </el-button>
@@ -173,10 +185,12 @@
 <script>
 import XHeader from '@/components/Header'
 import Pagination from '@/components/Pagination'
-// import { getJobList } from '@/api/test/auditT'
-import { partTimeCheck, getPartTime } from '@/api/audit/partTime'
+// import { getGoodList } from '@/api/test/auditT'
+import { identityCheck, getIdentity } from '@/api/audit/identity'
+// import { getCampus } from '@/api/campus'
+// import { getType } from '@/api/commodityType'
 export default {
-  name: 'Job',
+  name: 'Identity',
   components: { XHeader, Pagination },
   filters: {
     statusFilter(status) {
@@ -209,7 +223,8 @@ export default {
       listLoading: true,
       listQuery: { page: 1, pageSize: 20, param: '', status: '' },
       status: [0, 1, 2],
-      // school: ['章贡校区', '黄金校区'],
+      // school: [],
+      // type: ['衣服', '生活用品', '数码'],
       dialogFormVisible: false,
       detail: {}
     }
@@ -219,14 +234,45 @@ export default {
     this.fetchData()
   },
   methods: {
+    handleClickItem() {
+      this.$nextTick(() => {
+        const domImageMask = document.querySelector('.el-image-viewer__mask')
+        // 获取遮罩层dom
+        if (!domImageMask) {
+          return
+        }
+        domImageMask.addEventListener('click', () => {
+          // 点击遮罩层时调用关闭按钮的 click 事件
+          document.querySelector('.el-image-viewer__close').click()
+        })
+      })
+    },
+    // // 获取校区
+    // getCampusList() {
+    //   getCampus().then(res => {
+    //     this.school = res.data.data
+    //   })
+    // },
+    // // 获取商品类型
+    // getTypeList() {
+    //   getType().then(res => {
+    //     this.type = res.data.data
+    //   })
+    // },
     fetchData() {
       this.listLoading = true
-      getPartTime(this.listQuery).then((res) => {
+      getIdentity(this.listQuery).then((res) => {
         if (res.data.code === 204) {
           this.list = res.data.data
           this.total = 0
         } else {
-          this.list = res.data.data.list
+          const lists = res.data.data.list
+          console.log(lists)
+          this.list = lists.map((i, idx) => {
+            i.arUserIcon = this.$baseUrl + i.arUserIcon
+            return i
+          })
+          console.log(this.list)
           this.total = res.data.data.total
         }
         this.listLoading = false
@@ -249,12 +295,20 @@ export default {
       // }
     },
     getDetail(row) {
-      // console.log(row)
+      console.log('row', row)
       this.detail = row
+      const imglist = this.detail.arPic.split(',')
+
+      this.detail.arPic = imglist.map((i, idx) => {
+        i = this.$baseUrl + i
+        return i
+      })
+
+      console.log(this.detail.arPic)
       this.dialogFormVisible = true
     },
-    auditCross(id) {
-      partTimeCheck({ flag: 2, id: Number(id) }).then(res => {
+    auditCross(detail) {
+      identityCheck({ flag: 2, arId: detail.arId, identId: detail.arIdenId, userId: detail.arUserId }).then(res => {
         this.fetchData()
         this.$message({
           message: '审核通过',
@@ -264,8 +318,8 @@ export default {
         this.detail = {}
       })
     },
-    auditNCross(id) {
-      partTimeCheck({ flag: 1, id: Number(id) }).then(res => {
+    auditNCross(detail) {
+      identityCheck({ flag: 2, arId: detail.arId, identId: detail.arIdenId, userId: detail.arUserId }).then(res => {
         this.fetchData()
         this.$message({
           message: '审核不通过',
@@ -280,7 +334,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.job {
+.identity {
   &-container {
     width: 100%;
     box-sizing: border-box;
@@ -302,7 +356,9 @@ export default {
 }
 
 .btn-box {
-  margin: 4px 0;
+  padding-top: 10px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .page-total {
@@ -312,27 +368,6 @@ export default {
   span {
     line-height: 40px;
   }
-}
-
-.detail {
-  padding: 10px;
-  font-size: 12px;
-  &-head {
-    color: #606266;
-    line-height: 30px;
-    margin: 4px 0;
-    font-weight: 900;
-  }
-  &-info {
-    background: #eef1f6;
-    padding: 10px 20px;
-  }
-}
-
-.btn-box {
-  padding-top: 10px;
-  display: flex;
-  justify-content: flex-end;
 }
 
 ::v-deep .el-dialog {
@@ -348,6 +383,9 @@ export default {
     &-info {
       background: #eef1f6;
       padding: 10px 20px;
+    }
+    &-tag {
+      margin: 0 4px;
     }
   }
   @media screen and (min-width: 300px) {
@@ -370,9 +408,6 @@ export default {
       &-info {
         font-size: 14px;
       }
-      &-tag {
-        margin: 0 4px;
-      }
     }
   }
   @media screen and (min-width: 1200px) {
@@ -388,3 +423,4 @@ export default {
   }
 }
 </style>
+

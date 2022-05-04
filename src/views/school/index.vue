@@ -18,12 +18,17 @@
 
       <el-table-column align="center" label="ID" width="80">
         <template slot-scope="scope">
-          {{ scope.row.id }}
+          {{ scope.row.cmpId }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="title">
+      <el-table-column align="center" label="校区">
         <template slot-scope="scope">
-          {{ scope.row.title }}
+          {{ scope.row.cmpName }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="创建时间" width="160">
+        <template slot-scope="scope">
+          {{ scope.row.cmpCreateTime }}
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
@@ -39,7 +44,8 @@
 
 <script>
 import XHeader from '@/components/Header'
-import { getList } from '@/api/schoolT'
+// import { getList } from '@/api/test/schoolT'
+import { uploadCampus, deleteCampus, getCampus } from '@/api/campus'
 export default {
   name: 'SwiperUpload',
   components: { XHeader },
@@ -63,30 +69,30 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getList().then(response => {
+      getCampus().then(response => {
         console.log('response', response)
-        this.list = response.data.items
+        this.list = response.data.data
         this.listLoading = false
       })
     },
     onSubmit() {
-      this.$message({
-        message: '添加成功',
-        type: 'success'
+      uploadCampus({ cmpName: this.schoolName }).then(res => {
+        this.$message({
+          message: '添加成功',
+          type: 'success'
+        })
+        this.fetchData()
+        this.schoolName = ''
       })
-
-      this.list.unshift({
-        id: Math.round(Math.random(20) * 10 + 10),
-        title: this.schoolName
-      })
-      this.schoolName = ''
     },
     handleDelete(row, index) {
-      this.$message({
-        message: '删除成功',
-        type: 'success'
+      deleteCampus({ cmpId: row.cmpId }).then(res => {
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
+        this.fetchData()
       })
-      this.list.splice(index, 1)
     }
   }
 }

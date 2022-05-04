@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '管理后台',
+  title: '智安E校园后台管理系统',
 
   /**
    * @type {boolean} true | false

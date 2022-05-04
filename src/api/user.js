@@ -1,24 +1,30 @@
 import request from '@/utils/request'
 
-export function login(data) {
+export function login(params) {
   return request({
-    url: '/vue-admin-template/user/login',
+    url: '/auth/login',
     method: 'post',
-    data
+    params,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8;'
+    }
+
   })
 }
 
-export function getInfo(token) {
+export function getInfo(params) {
   return request({
-    url: '/vue-admin-template/user/info',
+    url: '',
     method: 'get',
-    params: { token }
+    params
   })
 }
 
-export function logout() {
+export function logout(params) {
   return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
+    url: '/user/logout',
+    method: 'post',
+    params
   })
 }

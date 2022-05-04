@@ -3,7 +3,7 @@
     <XHeader title="用户管理" />
     <div class="user-search">
       <el-input
-        v-model="listQuery.username"
+        v-model="listQuery.param"
         placeholder="输入用户名"
         style="flex: 1; margin-right: 4px"
         @keyup.enter.native="handleFilter"
@@ -25,35 +25,45 @@
       fit
       highlight-current-row
     >
-      <el-table-column prop="headImage" label="头像" width="80" class="head">
-        <template slot-scope="scope">
+      <el-table-column prop="useIcon" label="头像" width="80" class="head">
+        <template>
           <!--图片 高度固定 宽度适应 -->
           <img
-            :src="scope.row.headImage"
+            :src="img"
             alt=""
             style="height: 60px; width: 60px"
           >
         </template>
       </el-table-column>
-      <el-table-column prop="username" label="用户名" align="center">
+      <el-table-column prop="userId" label="ID" align="center">
         <template slot-scope="scope">
-          {{ scope.row.username }}
+          {{ scope.row.userId }}
         </template>
       </el-table-column>
-      <el-table-column prop="password" label="密码" align="center">
+      <el-table-column prop="userNick" label="昵称" align="center">
         <template slot-scope="scope">
-          {{ scope.row.password }}
+          {{ scope.row.userNick }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="userUsername" label="用户名" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.userUsername }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="userPassword" label="密码" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.userPassword }}
         </template>
       </el-table-column>
       <el-table-column
         align="center"
-        prop="createDate"
+        prop="userCreateTime"
         label="注册日期"
         width="200"
       >
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.createDate }}</span>
+          <span>{{ scope.row.userCreateTime }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -63,8 +73,8 @@
         align="center"
       >
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{
-            scope.row.status == 0 ? "正常" : "冻结中"
+          <el-tag :type="scope.row.userStatus | statusFilter">{{
+            scope.row.userStatus === 1 ? "正常" : "冻结中"
           }}</el-tag>
         </template>
       </el-table-column>
@@ -77,7 +87,7 @@
         <template slot-scope="{ row, $index }">
           <div class="btn-box">
             <el-button
-              v-if="row.status === 0"
+              v-if="row.userStatus === 1"
               size="mini"
               type="warning"
               @click="handleFreeze(row, $index,select=1)"
@@ -87,7 +97,7 @@
             <el-button
               v-else
               size="mini"
-              type="success"
+              type="primary"
               @click="handleFreeze(row, $index,select=2)"
             >
               解封
@@ -124,28 +134,31 @@
 <script>
 import XHeader from '@/components/Header'
 import Pagination from '@/components/Pagination'
-import { getList } from '@/api/userT'
+
+import { getUser, deleteUser, updateUserStatus } from '@/api/userCtrl'
 export default {
   name: 'User',
   components: { XHeader, Pagination },
   filters: {
     statusFilter(status) {
       const statusMap = {
-        0: 'success',
-        1: 'danger'
+        0: 'warning',
+        1: 'primary'
       }
       return statusMap[status]
     }
   },
   data() {
     return {
+      img: require('@/assets/logo.png'),
       list: null,
       total: 0,
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20,
-        username: undefined
+        pageSize: 20,
+        param: '',
+        status: ''
       }
     }
   },
@@ -158,10 +171,14 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getList(this.listQuery).then((response) => {
-        console.log('response', response)
-        this.list = response.data.items
-        this.total = response.data.total
+      getUser(this.listQuery).then((res) => {
+        if (res.data.code === 204) {
+          this.list = res.data.data
+          this.total = 0
+        } else {
+          this.list = res.data.data.list
+          this.total = res.data.data.total
+        }
         this.listLoading = false
       })
     },
@@ -171,16 +188,33 @@ export default {
     },
     handleFreeze(row, index, select) {
       if (select === 1) {
-        this.list[index].status = 1
+        // 冻结
+        console.log('冻结')
+        updateUserStatus({ status: 0, userId: row.userId }).then(res => {
+          this.fetchData()
+          this.$message({
+            message: '冻结成功',
+            type: 'success'
+          })
+        })
       } else {
-        this.list[index].status = 0
+        console.log('解封')
+        updateUserStatus({ status: 1, userId: row.userId }).then(res => {
+          this.fetchData()
+          this.$message({
+            message: '解封成功',
+            type: 'success'
+          })
+        })
       }
     },
     handleDelete(row, index) {
-      this.list.splice(index, 1)
-      this.$message({
-        message: '删除成功',
-        type: 'success'
+      deleteUser({ userId: row.userId }).then(res => {
+        this.fetchData()
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
       })
     }
   }

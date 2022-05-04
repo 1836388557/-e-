@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      title: '小狐狸管理后台',
+      title: '智安E校园后台管理系统',
       logo: require('@/assets/logo.png')
     }
   }

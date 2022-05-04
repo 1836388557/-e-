@@ -7,7 +7,12 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    userId: '',
+    userInfo: {
+      username: '',
+      password: ''
+    }
   }
 }
 
@@ -25,13 +30,23 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
+  // 设置token
+  SET_USERID: (state, userId) => {
+    state.userId = userId
+  },
   // 设置名字
   SET_NAME: (state, name) => {
     state.name = name
   },
-  // 头像/替身
+  // 头像
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_USERINFO: (state, userInfo) => {
+    state.userInfo.username = userInfo.username
+    state.userInfo.password = userInfo.password
+    console.log(userInfo)
+    localStorage.setItem('userInfo', JSON.stringify(userInfo))
   }
 }
 
@@ -39,13 +54,17 @@ const mutations = {
 const actions = {
   // 用户登录
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { username, password, tag, rememberMe } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
+      login({ username: username.trim(), password: password, tag, rememberMe }).then(response => {
+        const { data, headers } = response
         // 保存token到vuex state
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        console.log(username, password)
+
+        commit('SET_USERINFO', { username, password })
+        commit('SET_TOKEN', headers.authorization)
+        commit('SET_USERID', data.data)
+        setToken(headers.authorization)
         resolve()
       }).catch(error => {
         reject(error)

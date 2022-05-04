@@ -115,6 +115,12 @@ export const constantRoutes = [
         name: 'job',
         component: () => import('@/views/audit/job/index'),
         meta: { title: '兼职', icon: 'el-icon-office-building' }
+      },
+      {
+        path: 'identity',
+        name: 'identity',
+        component: () => import('@/views/audit/identity/index'),
+        meta: { title: '认证', icon: 'el-icon-office-building' }
       }
     ]
   },
@@ -139,30 +145,6 @@ export const constantRoutes = [
         name: 'user',
         component: () => import('@/views/user/index'),
         meta: { title: '用户', icon: 'el-icon-user-solid' }
-      }
-    ]
-  },
-
-  // {
-  //   path: '/form',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Form',
-  //       component: () => import('@/views/form/index'),
-  //       meta: { title: '表单', icon: 'form' }
-  //     }
-  //   ]
-  // },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: '',
-        meta: { title: '额外链接', icon: 'link' }
       }
     ]
   },
