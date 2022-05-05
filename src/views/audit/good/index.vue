@@ -319,16 +319,14 @@ export default {
       // }
     },
     getDetail(row) {
-      console.log(row)
-      this.detail = row
-      const imglist = this.detail.pdPic.split(',')
-      console.log(imglist)
-
-      this.detail.pdPic = imglist.map((i, idx) => {
+      // console.log('row', row)
+      Object.assign(this.detail, row)
+      const imglist = row.pdPic.split(',').map((i, idx) => {
         i = this.$baseUrl + i
         console.log(i)
         return i
       })
+      this.detail.pdPic = imglist
       this.dialogFormVisible = true
     },
     auditCross(id) {

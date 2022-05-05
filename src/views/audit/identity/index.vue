@@ -75,7 +75,7 @@
     >
       <el-table-column label="申请者ID" align="center">
         <template slot-scope="scope">
-          {{ scope.row.arUserId | titleFilter }}
+          {{ scope.row.arUserId }}
         </template>
       </el-table-column>
       <!-- 头像 userIcon-->
@@ -295,16 +295,15 @@ export default {
       // }
     },
     getDetail(row) {
-      console.log('row', row)
-      this.detail = row
-      const imglist = this.detail.arPic.split(',')
-
-      this.detail.arPic = imglist.map((i, idx) => {
+      // console.log('row', row)
+      Object.assign(this.detail, row)
+      const imglist = row.arPic.split(',').map((i, idx) => {
         i = this.$baseUrl + i
         return i
       })
-
-      console.log(this.detail.arPic)
+      // console.log(this.detail)
+      this.detail.arPic = imglist
+      // console.log(this.detail.arPic)
       this.dialogFormVisible = true
     },
     auditCross(detail) {
