@@ -19,6 +19,19 @@ export const constantRoutes = [
     hidden: true
   },
 
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/index',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/request/index'),
+  //       name: 'index',
+  //       meta: { title: '访问', icon: 'international', affix: true }
+  //     }
+  //   ]
+  // },
   {
     path: '/',
     component: Layout,
@@ -27,10 +40,21 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard' }
-    }]
+      meta: { title: '仪表盘', icon: 'dashboard' }
+    }
+    ]
   },
-
+  {
+    path: '/earth',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'earth',
+      component: () => import('@/views/earth/index'),
+      meta: { title: '地球', icon: 'international' }
+    }
+    ]
+  },
   {
     path: '/uploadSwiper',
     component: Layout,

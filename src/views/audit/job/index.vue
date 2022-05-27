@@ -79,6 +79,11 @@
           <span>{{ scope.row.ptCreateTime }}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="nick" label="发布者昵称" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.ptPublisherNick }}
+        </template>
+      </el-table-column>
       <el-table-column
         class-name="status-col"
         label="状态"
@@ -122,6 +127,25 @@
         <div>
           <div class="detail-head">提交日期</div>
           <div class="detail-info">{{ detail.ptCreateTime }}</div>
+        </div>
+        <div>
+          <div class="detail-head">兼职人数</div>
+          <div class="detail-info"><span style="color:#409EFF;">{{ detail.ptPeoples }}</span></div>
+        </div>
+        <div>
+          <div class="detail-head">联系电话</div>
+          <div class="detail-info">{{ detail.ptPublisherPhone }}</div>
+        </div>
+        <div>
+          <div class="detail-head">兼职时间</div>
+          <div class="detail-info">
+            <div style="padding:10px 0;">起始时间：<span style="color:#409EFF;">{{ detail.ptStartTime }}</span></div>
+            <div style="padding:10px 0;">终止时间：<span style="color:#409EFF;">{{ detail.ptEndTime }}</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="detail-head">兼职地点</div>
+          <div class="detail-info">{{ detail.ptAddress }}</div>
         </div>
         <div>
           <div class="detail-head">分类</div>

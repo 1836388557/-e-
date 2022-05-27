@@ -14,10 +14,10 @@ import router from './router'
 import '@/icons'
 import '@/permission'
 
-if (process.env.NODE_ENV === 'production') {
-  const { mockXHR } = require('../mock')
-  mockXHR()
-}
+// if (process.env.NODE_ENV === 'production') {
+//   const { mockXHR } = require('../mock')
+//   mockXHR()
+// }
 Vue.prototype.$baseUrl = 'http://49.232.203.36:2022'
 
 Vue.use(ElementUI)

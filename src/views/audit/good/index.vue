@@ -94,6 +94,11 @@
           <span>{{ scope.row.pdCreateTime }}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="nick" label="发布者昵称" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.pdPublisherNick }}
+        </template>
+      </el-table-column>
       <el-table-column
         class-name="status-col"
         label="状态"
@@ -161,6 +166,14 @@
         <div>
           <div class="detail-head">提交日期</div>
           <div class="detail-info">{{ detail.pdCreateTime }}</div>
+        </div>
+        <div>
+          <div class="detail-head">价格</div>
+          <div class="detail-info"><span style="color:red;">￥{{ detail.pdPrice }}</span></div>
+        </div>
+        <div>
+          <div class="detail-head">数量</div>
+          <div class="detail-info"><span style="color:#409EFF;">{{ detail.pdCount }}</span></div>
         </div>
         <div>
           <div class="detail-head">分类</div>

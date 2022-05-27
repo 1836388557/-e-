@@ -94,6 +94,11 @@
           <span>{{ scope.row.pdDemCreateTime }}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="nick" label="发布者昵称" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.pdDemPublisherNick }}
+        </template>
+      </el-table-column>
       <el-table-column
         class-name="status-col"
         label="状态"
@@ -166,6 +171,13 @@
         <div>
           <div class="detail-head">提交日期</div>
           <div class="detail-info">{{ detail.pdDemCreateTime }}</div>
+        </div>
+        <div>
+          <div class="detail-head">价格范围</div>
+          <div class="detail-info">
+            <div style="padding:10px 0;">最低价：<span style="color:red;">{{ detail.pdDemMinP }}</span></div>
+            <div style="padding:10px 0;">最高价：<span style="color:red;">{{ detail.pdDemMaxP }}</span></div>
+          </div>
         </div>
         <div>
           <div class="detail-head">分类</div>

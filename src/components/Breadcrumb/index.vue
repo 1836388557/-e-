@@ -47,7 +47,7 @@ export default {
       //  如果不是 首页（仪表盘）
       if (!this.isDashboard(first)) {
         // 加上首页的路由信息
-        matched = [{ path: '/dashboard', meta: { title: '首页' }}].concat(
+        matched = [{ path: '/dashboard', meta: { title: '仪表盘' }}].concat(
           matched
         )
       }
@@ -63,7 +63,7 @@ export default {
         return false
       }
       return (
-        name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
+        name.trim().toLocaleLowerCase() === 'dashboard'.toLocaleLowerCase()
       )
     },
     pathCompile(path) {

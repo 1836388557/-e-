@@ -43,10 +43,10 @@
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
-      <div class="tips">
+      <!-- <div class="tips">
         <span style="margin-right:20px;">用户名: admin</span>
         <span> 密码: any</span>
-      </div>
+      </div> -->
 
     </el-form>
   </div>
@@ -54,15 +54,13 @@
 
 <script>
 
-// 账号：admin  密码：admin@123
-
 export default {
   name: 'Login',
   data() {
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin@123',
+        username: '',
+        password: '',
         rememberMe: true,
         tag: 1
 
