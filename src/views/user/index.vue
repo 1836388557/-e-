@@ -25,7 +25,7 @@
       fit
       highlight-current-row
     >
-      <el-table-column prop="useIcon" label="头像" width="80" class="head">
+      <el-table-column prop="useIcon" label="头像" width="100" class="head" align="center">
         <template>
           <!--图片 高度固定 宽度适应 -->
           <img

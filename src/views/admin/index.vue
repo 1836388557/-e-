@@ -33,7 +33,7 @@
       fit
       highlight-current-row
     >
-      <el-table-column label="头像" width="80" class="head" align="center">
+      <el-table-column label="头像" width="100" class="head" align="center">
         <template>
           <!--图片 高度固定 宽度适应 -->
           <img :src="img" alt="" style="height: 60px; width: 60px">
