@@ -42,9 +42,9 @@
     >
 
       <el-table-column label="通告标题" align="center">
-        <!-- <template slot-scope="scope">
-          {{ scope.row.adUsername }}
-        </template> -->
+        <template slot-scope="scope">
+          {{ scope.row.ntTitle }}
+        </template>
 
       </el-table-column>
       <el-table-column label="通告内容" align="center">
@@ -129,7 +129,8 @@ export default {
     fetchData() {
       this.list = [
         {
-          ntContent: '欢迎使用智安E校园',
+          ntTitle: '欢迎使用智安E校园',
+          ntContent: '智安E校园是一款面向搞笑的软件，用户可以通过发布内容满足自己的需求',
           ntTime: '2022-05-07 20:51:31'
         }
       ]
