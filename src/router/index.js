@@ -43,17 +43,6 @@ export const constantRoutes = [
   //   ]
   // },
   {
-    path: '/earth',
-    component: Layout,
-    children: [{
-      path: 'index',
-      name: 'earth',
-      component: () => import('@/views/earth/index'),
-      meta: { title: '地球', icon: 'international' }
-    }
-    ]
-  },
-  {
     path: '/uploadSwiper',
     component: Layout,
     children: [
@@ -142,7 +131,7 @@ export const constantRoutes = [
         path: 'identity',
         name: 'identity',
         component: () => import('@/views/audit/identity/index'),
-        meta: { title: '认证', icon: 'el-icon-office-building' }
+        meta: { title: '认证', icon: 'el-icon-postcard' }
       }
     ]
   },
@@ -167,6 +156,18 @@ export const constantRoutes = [
         name: 'user',
         component: () => import('@/views/user/index'),
         meta: { title: '用户', icon: 'el-icon-user-solid' }
+      }
+    ]
+  },
+  {
+    path: '/feedback',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'feedback',
+        component: () => import('@/views/feedback/index'),
+        meta: { title: '用户反馈', icon: 'el-icon-message' }
       }
     ]
   },

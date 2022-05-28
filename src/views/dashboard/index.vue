@@ -85,6 +85,7 @@ const Pie = {
   good:
   {
     name: '商品发布',
+    total: 102,
     data: [
       { value: 82, name: '通过' },
       { value: 15, name: '待审核' },
@@ -93,6 +94,7 @@ const Pie = {
   },
   demand: {
     name: '需求发布',
+    total: 78,
     data: [
       { value: 64, name: '通过' },
       { value: 11, name: '待审核' },
@@ -101,6 +103,7 @@ const Pie = {
   },
   carpool: {
     name: '拼车发布',
+    total: 48,
     data: [
       { value: 32, name: '通过' },
       { value: 14, name: '待审核' },
@@ -108,6 +111,7 @@ const Pie = {
     ]
   }, activity: {
     name: '活动发布',
+    total: 25,
     data: [
       { value: 19, name: '通过' },
       { value: 5, name: '待审核' },
@@ -115,6 +119,7 @@ const Pie = {
     ]
   }, parttime: {
     name: '兼职发布',
+    total: 11,
     data: [
       { value: 8, name: '通过' },
       { value: 2, name: '待审核' },
@@ -122,6 +127,7 @@ const Pie = {
     ]
   }, identity: {
     name: '认证发布',
+    total: 15,
     data: [
       { value: 11, name: '通过' },
       { value: 3, name: '待审核' },

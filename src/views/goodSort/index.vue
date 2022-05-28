@@ -15,12 +15,12 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="标题">
+      <el-table-column align="center" label="类别">
         <template slot-scope="scope">
           {{ scope.row.pacName }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" width="200px;">
+      <el-table-column align="center" label="创建时间" width="500px;">
         <template slot-scope="scope">
           {{ scope.row.pacCreateTime }}
         </template>

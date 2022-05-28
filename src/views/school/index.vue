@@ -16,7 +16,7 @@
       highlight-current-row
     >
 
-      <el-table-column align="center" label="ID" width="80">
+      <el-table-column align="center" label="ID" width="120">
         <template slot-scope="scope">
           {{ scope.row.cmpId }}
         </template>
@@ -26,7 +26,7 @@
           {{ scope.row.cmpName }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" width="160">
+      <el-table-column align="center" label="创建时间" width="500">
         <template slot-scope="scope">
           {{ scope.row.cmpCreateTime }}
         </template>

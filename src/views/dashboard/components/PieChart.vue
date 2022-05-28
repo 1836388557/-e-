@@ -64,6 +64,7 @@ export default {
         title: {
           top: 20,
           text: data.name,
+          subtext: `总发布数：${data.total}`,
           textStyle: {
             fontWeight: 'normal',
             fontSize: 16,
@@ -86,9 +87,10 @@ export default {
         },
         series: [
           {
-            name: '总发布',
+            name: '数量',
             type: 'pie',
             radius: '50%',
+            top: '20',
             data: data.data,
             animationEasing: 'cubicInOut',
             animationDuration: 2600,

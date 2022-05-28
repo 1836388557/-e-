@@ -1,69 +1,7 @@
 <template>
   <div class="identity-container">
-    <XHeader title="认证审核" />
+    <XHeader title="用户反馈" />
 
-    <div class="identity-search">
-      <el-input
-        v-model="listQuery.param"
-        placeholder="输入申请者昵称"
-        style="width: 300px"
-        class="identity-search-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-select
-        v-model="listQuery.status"
-        placeholder="审核状态"
-        clearable
-        style="width: 110px"
-        class="identity-search-item"
-      >
-        <el-option
-          v-for="item in status"
-          :key="item"
-          :label="item | statusFilterText"
-          :value="item"
-          @click.native="sortSelected((a = 1), item)"
-        />
-      </el-select>
-      <!-- <el-select
-        v-model="listQuery.school"
-        placeholder="校区"
-        clearable
-        style="width: 110px"
-        class="identity-search-item"
-      >
-        <el-option
-          v-for="item in school"
-          :key="item"
-          :label="item"
-          :value="item"
-          @click.native="sortSelected(a=2,item)"
-        />
-      </el-select>
-      <el-select
-        v-model="listQuery.type"
-        placeholder="类型"
-        clearable
-        style="width: 110px"
-        class="identity-search-item"
-      >
-        <el-option
-          v-for="item in type"
-          :key="item"
-          :label="item"
-          :value="item"
-          @click.native="sortSelected(a=3,item)"
-        />
-      </el-select> -->
-      <el-button
-        class="identity-search-btn identity-search-item"
-        type="primary"
-        icon="el-icon-search"
-        @click="handleFilter"
-      >
-        搜索
-      </el-button>
-    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -73,39 +11,18 @@
       highlight-current-row
       @row-click="getDetail"
     >
-      <el-table-column label="认证ID" align="center">
+      <el-table-column label="反馈内容" align="center">
         <template slot-scope="scope">
-          {{ scope.row.arId }}
+          {{ scope.row.fbContent }}
         </template>
       </el-table-column>
-      <el-table-column label="认证名称" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.arIdenName }}
-        </template>
-      </el-table-column>
-      <!-- 头像 userIcon-->
-      <el-table-column label="头像" width="80" class="head" align="center">
-        <template slot-scope="scope">
-          <!--图片 高度固定 宽度适应 -->
-          <img :src="scope.row.arUserIcon" alt="" style="height: 60px; width: 60px">
-        </template>
-      </el-table-column>
-      <el-table-column label="申请者昵称" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.arUserNick | contentFilter }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        label="申请时间"
-        width="200"
-      >
+      <el-table-column align="center" label="反馈时间" width="500px;">
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.arCreateTime }}</span>
+          <span>{{ scope.row.fbTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         class-name="status-col"
         label="状态"
         width="120"
@@ -120,7 +37,7 @@
                 : "已通过"
           }}</el-tag>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <div class="page-total">
       共
@@ -136,7 +53,7 @@
       @pagination="fetchData"
     />
     <el-dialog
-      title="证明材料"
+      title="反馈图片"
       :visible.sync="dialogFormVisible"
       style="dialog"
     >
@@ -191,7 +108,7 @@
 import XHeader from '@/components/Header'
 import Pagination from '@/components/Pagination'
 // import { getGoodList } from '@/api/test/auditT'
-import { identityCheck, getIdentity } from '@/api/audit/identity'
+// import { identityCheck, getIdentity } from '@/api/audit/identity'
 // import { getCampus } from '@/api/campus'
 // import { getType } from '@/api/commodityType'
 export default {
@@ -224,7 +141,7 @@ export default {
   data() {
     return {
       list: null,
-      total: 0,
+      total: 2,
       listLoading: true,
       listQuery: { page: 1, pageSize: 20, param: '', status: '' },
       status: [0, 1, 2],
@@ -265,23 +182,33 @@ export default {
     //   })
     // },
     fetchData() {
-      this.listLoading = true
-      getIdentity(this.listQuery).then((res) => {
-        if (res.data.code === 204) {
-          this.list = res.data.data
-          this.total = 0
-        } else {
-          const lists = res.data.data.list
-          console.log(lists)
-          this.list = lists.map((i, idx) => {
-            i.arUserIcon = this.$baseUrl + i.arUserIcon
-            return i
-          })
-          console.log(this.list)
-          this.total = res.data.data.total
+      this.listLoading = false
+      this.list = [
+        {
+          fbContent: '我觉得这个非常棒，希望可以继续优化',
+          fbTime: '2022-05-07 20:51:31'
+        },
+        {
+          fbContent: '第一次用，感觉还不错',
+          fbTime: '2022-05-12 08:50:10'
         }
-        this.listLoading = false
-      })
+      ]
+      // getIdentity(this.listQuery).then((res) => {
+      //   if (res.data.code === 204) {
+      //     this.list = res.data.data
+      //     this.total = 0
+      //   } else {
+      //     const lists = res.data.data.list
+      //     console.log(lists)
+      //     this.list = lists.map((i, idx) => {
+      //       i.arUserIcon = this.$baseUrl + i.arUserIcon
+      //       return i
+      //     })
+      //     console.log(this.list)
+      //     this.total = res.data.data.total
+      //   }
+      //   this.listLoading = false
+      // })
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -312,26 +239,26 @@ export default {
       this.dialogFormVisible = true
     },
     auditCross(detail) {
-      identityCheck({ flag: 2, arId: detail.arId, identId: detail.arIdenId, userId: detail.arUserId }).then(res => {
-        this.fetchData()
-        this.$message({
-          message: '审核通过',
-          type: 'success'
-        })
-        this.dialogFormVisible = false
-        this.detail = {}
-      })
+      // identityCheck({ flag: 2, arId: detail.arId, identId: detail.arIdenId, userId: detail.arUserId }).then(res => {
+      //   this.fetchData()
+      //   this.$message({
+      //     message: '审核通过',
+      //     type: 'success'
+      //   })
+      //   this.dialogFormVisible = false
+      //   this.detail = {}
+      // })
     },
     auditNCross(detail) {
-      identityCheck({ flag: 2, arId: detail.arId, identId: detail.arIdenId, userId: detail.arUserId }).then(res => {
-        this.fetchData()
-        this.$message({
-          message: '审核不通过',
-          type: 'success'
-        })
-        this.dialogFormVisible = false
-        this.detail = {}
-      })
+      // identityCheck({ flag: 2, arId: detail.arId, identId: detail.arIdenId, userId: detail.arUserId }).then(res => {
+      //   this.fetchData()
+      //   this.$message({
+      //     message: '审核不通过',
+      //     type: 'success'
+      //   })
+      //   this.dialogFormVisible = false
+      //   this.detail = {}
+      // })
     }
   }
 }
@@ -425,9 +352,6 @@ export default {
       }
     }
   }
-}
-::v-deep .cell {
-  text-overflow: unset !important;
 }
 </style>
 
