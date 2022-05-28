@@ -1,5 +1,5 @@
 <template>
-  <div :class="className" :style="{height:height,width:width}" />
+  <div :class="className" :style="{ height: height, width: width }" />
 </template>
 
 <script>
@@ -23,7 +23,7 @@ export default {
       default: '300px'
     },
     chartData: {
-      type: Array,
+      type: Object,
       required: true
     }
   },
@@ -60,6 +60,17 @@ export default {
     },
     setOptions(data) {
       this.chart.setOption({
+        backgroundColor: '#394056',
+        title: {
+          top: 20,
+          text: data.name,
+          textStyle: {
+            fontWeight: 'normal',
+            fontSize: 16,
+            color: '#F1F1F3'
+          },
+          left: 'center'
+        },
         tooltip: {
           trigger: 'item',
           formatter: '{a} <br/>{b} : {c} ({d}%)'
@@ -68,21 +79,31 @@ export default {
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['通过', '待审核', '未通过']
+          data: ['通过', '待审核', '未通过'],
+          textStyle: {
+            color: '#fff'
+          }
         },
         series: [
           {
             name: '总发布',
             type: 'pie',
             radius: '50%',
-            data: data,
+            data: data.data,
             animationEasing: 'cubicInOut',
             animationDuration: 2600,
             emphasis: {
               itemStyle: {
-                shadowBlur: 10,
+                shadowBlur: 40,
                 shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                shadowColor: 'rgba(24,144,255, 0.8)'
+              }
+            },
+            itemStyle: {
+              normal: {
+                // 饼状图阴影，值越⼤阴影亮度越⾼
+                shadowBlur: 60,
+                shadowColor: 'rgba(24,144,255, 0.8)'
               }
             }
           }

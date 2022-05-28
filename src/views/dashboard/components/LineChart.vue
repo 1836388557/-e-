@@ -27,7 +27,7 @@ export default {
       default: true
     },
     chartData: {
-      type: Array,
+      type: Object,
       required: true
     }
   },
@@ -65,18 +65,34 @@ export default {
     },
     setOptions(data) {
       this.chart.setOption({
+        backgroundColor: '#394056',
+        title: {
+          top: 20,
+          text: data.name,
+          textStyle: {
+            fontWeight: 'normal',
+            fontSize: 16,
+            color: 'rgb(0,136,212)'
+          },
+          left: 'center'
+        },
         xAxis: {
           data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
           boundaryGap: false,
           axisTick: {
             show: false
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#57617B'
+            }
           }
         },
         grid: {
           left: 10,
           right: 10,
           bottom: 20,
-          top: 30,
+          top: 60,
           containLabel: true
         },
         tooltip: {
@@ -84,11 +100,28 @@ export default {
           axisPointer: {
             type: 'cross'
           },
-          padding: [5, 10]
+          padding: [10, 10]
         },
         yAxis: {
           axisTick: {
             show: false
+          },
+          name: '次',
+          axisLine: {
+            lineStyle: {
+              color: '#57617B'
+            }
+          },
+          axisLabel: {
+            margin: 10,
+            textStyle: {
+              fontSize: 14
+            }
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#57617B'
+            }
           }
         },
         series: [
@@ -97,17 +130,26 @@ export default {
             type: 'line',
             itemStyle: {
               normal: {
-                color: '#3888fa',
-                lineStyle: {
-                  color: '#3888fa',
-                  width: 2
-                },
-                areaStyle: {
-                  color: '#f3f8ff'
-                }
+                color: 'rgb(0,136,212)',
+                borderColor: 'rgba(0,136,212,0.2)',
+                borderWidth: 12
+
               }
             },
-            data: data,
+            areaStyle: {
+              normal: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                  offset: 0,
+                  color: 'rgba(0, 136, 212, 0.3)'
+                }, {
+                  offset: 0.8,
+                  color: 'rgba(0, 136, 212, 0)'
+                }], false),
+                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                shadowBlur: 10
+              }
+            },
+            data: data.data,
             animationDuration: 2800,
             animationEasing: 'quadraticOut'
           }]

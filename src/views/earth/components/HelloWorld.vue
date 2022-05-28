@@ -78,7 +78,7 @@ export default {
             },
             ambientCubemap: {
               texture: '/images/pisa.hdr',
-              diffuseIntensity: 0.2
+              diffuseIntensity: 3
             }
           }
         }

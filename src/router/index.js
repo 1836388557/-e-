@@ -18,20 +18,6 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/index',
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/request/index'),
-  //       name: 'index',
-  //       meta: { title: '访问', icon: 'international', affix: true }
-  //     }
-  //   ]
-  // },
   {
     path: '/',
     component: Layout,
@@ -44,6 +30,18 @@ export const constantRoutes = [
     }
     ]
   },
+  // {
+  //   path: '/request',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/request/index'),
+  //       name: 'request',
+  //       meta: { title: '访问', icon: 'international', affix: true }
+  //     }
+  //   ]
+  // },
   {
     path: '/earth',
     component: Layout,

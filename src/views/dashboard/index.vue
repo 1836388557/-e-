@@ -2,54 +2,54 @@
   <div class="dashboard-container">
     <div class="dashboard-editor-container">
       <el-row
-        style="background: #fff; padding: 16px 16px 0; margin-bottom: 32px"
+        style="background: #fff; margin-bottom: 32px"
       >
-        <div class="title">每日商品成交量</div>
+        <!-- <div class="title">每日商品成交量</div> -->
         <line-chart :chart-data="lineChartData1" />
       </el-row>
 
       <el-row :gutter="32">
         <el-col :xs="24" :sm="24" :lg="8">
           <div class="chart-wrapper">
-            <div class="title">商品发布</div>
+
             <pie-chart :chart-data="pieData.good" />
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="8">
           <div class="chart-wrapper">
-            <div class="title">需求发布</div>
+
             <pie-chart :chart-data="pieData.demand" />
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="8">
           <div class="chart-wrapper">
-            <div class="title">拼车发布</div>
+
             <pie-chart :chart-data="pieData.carpool" />
           </div>
         </el-col>
       </el-row>
       <el-row
-        style="background: #fff; padding: 16px 16px 0; margin-bottom: 32px"
+        style="background: #fff; margin-bottom: 32px"
       >
-        <div class="title">用户反馈数量</div>
+        <!-- <div class="title">用户反馈数量</div> -->
         <line-chart :chart-data="lineChartData2" />
       </el-row>
       <el-row :gutter="32">
         <el-col :xs="24" :sm="24" :lg="8">
           <div class="chart-wrapper">
-            <div class="title">活动发布</div>
+
             <pie-chart :chart-data="pieData.activity" />
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="8">
           <div class="chart-wrapper">
-            <div class="title">兼职发布</div>
+
             <pie-chart :chart-data="pieData.parttime" />
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="8">
           <div class="chart-wrapper">
-            <div class="title">认证发布</div>
+
             <pie-chart :chart-data="pieData.identity" />
           </div>
         </el-col>
@@ -65,44 +65,69 @@ import PieChart from './components/PieChart'
 const Turnover = [12, 8, 9, 14, 12, 10, 15]
 const FeedBack = [1, 4, 2, 3, 1, 5, 4]
 
-const nowTurnover = []
-const nowFeedBack = []
+const nowTurnover = {
+  name: '每日商品成交量',
+  data: []
+}
+const nowFeedBack = {
+  name: '用户反馈数量',
+  data: []
+}
 const date = new Date()
 const week = date.getDay()
 for (var i = 0; i < week; i++) {
-  nowTurnover.push(Turnover[i])
-  nowFeedBack.push(FeedBack[i])
+  nowTurnover.data.push(Turnover[i])
+  nowFeedBack.data.push(FeedBack[i])
 }
 console.log(nowTurnover)
 
 const Pie = {
-  good: [
-    { value: 82, name: '通过' },
-    { value: 15, name: '待审核' },
-    { value: 5, name: '未通过' }
-  ],
-  demand: [
-    { value: 64, name: '通过' },
-    { value: 11, name: '待审核' },
-    { value: 3, name: '未通过' }
-  ],
-  carpool: [
-    { value: 32, name: '通过' },
-    { value: 14, name: '待审核' },
-    { value: 2, name: '未通过' }
-  ], activity: [
-    { value: 19, name: '通过' },
-    { value: 5, name: '待审核' },
-    { value: 1, name: '未通过' }
-  ], parttime: [
-    { value: 8, name: '通过' },
-    { value: 2, name: '待审核' },
-    { value: 1, name: '未通过' }
-  ], identity: [
-    { value: 11, name: '通过' },
-    { value: 3, name: '待审核' },
-    { value: 1, name: '未通过' }
-  ]
+  good:
+  {
+    name: '商品发布',
+    data: [
+      { value: 82, name: '通过' },
+      { value: 15, name: '待审核' },
+      { value: 5, name: '未通过' }
+    ]
+  },
+  demand: {
+    name: '需求发布',
+    data: [
+      { value: 64, name: '通过' },
+      { value: 11, name: '待审核' },
+      { value: 3, name: '未通过' }
+    ]
+  },
+  carpool: {
+    name: '拼车发布',
+    data: [
+      { value: 32, name: '通过' },
+      { value: 14, name: '待审核' },
+      { value: 2, name: '未通过' }
+    ]
+  }, activity: {
+    name: '活动发布',
+    data: [
+      { value: 19, name: '通过' },
+      { value: 5, name: '待审核' },
+      { value: 1, name: '未通过' }
+    ]
+  }, parttime: {
+    name: '兼职发布',
+    data: [
+      { value: 8, name: '通过' },
+      { value: 2, name: '待审核' },
+      { value: 1, name: '未通过' }
+    ]
+  }, identity: {
+    name: '认证发布',
+    data: [
+      { value: 11, name: '通过' },
+      { value: 3, name: '待审核' },
+      { value: 1, name: '未通过' }
+    ]
+  }
 }
 export default {
   name: 'Dashboard',
@@ -135,7 +160,8 @@ export default {
 
 .dashboard-editor-container {
   padding: 32px;
-  background-color: rgb(240, 242, 245);
+  // background-color:rgba(0,136,212,0.1);
+   background-color:rgba(0,0,0,0.9);
   position: relative;
 
   .github-corner {
@@ -146,16 +172,17 @@ export default {
   }
 
   .chart-wrapper {
-    background: #fff;
-    padding: 16px 16px 0;
+    // background: #fff;
+    // padding: 16px 16px 16px;
     margin-bottom: 32px;
+    // box-shadow:0 0 40px 0 #3888fa;
   }
 }
 
 @media (max-width: 1024px) {
-  .chart-wrapper {
-    padding: 8px;
-  }
+  // .chart-wrapper {
+  //   padding: 8px;
+  // }
 }
 .title {
   padding: 10px 0;
