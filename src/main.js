@@ -23,7 +23,7 @@ Vue.prototype.$baseUrl = 'http://49.232.203.36:2022'
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false
-console.log = function() {}
+// console.log = function() {}
 
 new Vue({
   el: '#app',

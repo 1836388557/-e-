@@ -75,10 +75,16 @@ const nowFeedBack = {
 }
 const date = new Date()
 const week = date.getDay()
+console.log(week)
 for (var i = 0; i < week; i++) {
   nowTurnover.data.push(Turnover[i])
   nowFeedBack.data.push(FeedBack[i])
 }
+if (week === 0) {
+  nowTurnover.data = Turnover
+  nowFeedBack.data = FeedBack
+}
+
 console.log(nowTurnover)
 
 const Pie = {
