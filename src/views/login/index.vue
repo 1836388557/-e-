@@ -54,8 +54,7 @@
         type="none"
         class="login_btn"
         @click.native.prevent="handleLogin"
-        >登录</el-button
-      >
+      >登录</el-button>
 
       <!-- <div class="tips">
         <span style="margin-right:20px;">用户名: admin</span>
@@ -67,58 +66,62 @@
 
 <script>
 export default {
-  name: "Login",
+  name: 'Login',
   data() {
     return {
       loginForm: {
-        username: "",
-        password: "",
+        username: '',
+        password: '',
         rememberMe: true,
-        tag: 1,
+        tag: 1
       },
       loginRules: {
-        username: [{ required: true, trigger: "blur",message:'用户名不能为空' }],
-        password: [{ required: true, trigger: "blur",message:'密码不能为空' }],
+        username: [
+          { required: true, trigger: 'blur', message: '用户名不能为空' }
+        ],
+        password: [
+          { required: true, trigger: 'blur', message: '密码不能为空' }
+        ]
       },
       loading: false,
-      passwordType: "password",
-      redirect: undefined,
-    };
+      passwordType: 'password',
+      redirect: undefined
+    }
   },
   watch: {
     $route: {
-      handler: function (route) {
-        this.redirect = route.query && route.query.redirect;
+      handler: function(route) {
+        this.redirect = route.query && route.query.redirect
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
   methods: {
     showPwd() {
-      if (this.passwordType === "password") {
-        this.passwordType = "";
+      if (this.passwordType === 'password') {
+        this.passwordType = ''
       } else {
-        this.passwordType = "password";
+        this.passwordType = 'password'
       }
       this.$nextTick(() => {
-        this.$refs.password.focus();
-      });
+        this.$refs.password.focus()
+      })
     },
     handleLogin() {
-      this.loading = true;
+      this.loading = true
       this.$store
-        .dispatch("user/login", this.loginForm)
+        .dispatch('user/login', this.loginForm)
         .then((res) => {
-          console.log(res);
-          this.$router.push({ path: this.redirect || "/" });
-          this.loading = false;
+          console.log(res)
+          this.$router.push({ path: this.redirect || '/' })
+          this.loading = false
         })
         .catch(() => {
-          this.loading = false;
-        });
-    },
-  },
-};
+          this.loading = false
+        })
+    }
+  }
+}
 </script>
 
 <style lang="scss">
@@ -234,18 +237,18 @@ $light_gray: #eee;
 .login_btn {
   width: 100%;
   margin-bottom: 30px;
-  border:none;
+  border: none;
   background-image: linear-gradient(
     to right,
-    rgba(100, 170, 255,0.8),
-    rgba(150, 100, 255,0.8)
+    rgba(100, 170, 255, 0.8),
+    rgba(150, 100, 255, 0.8)
   );
-  border-radius:100px;
-  padding:16px 20px;
+  border-radius: 100px;
+  padding: 16px 20px;
   box-shadow: 0 4px 24px 0 rgba(39, 125, 255, 0.3);
   color: white;
 }
-.login_btn:hover{
-  color:blue;
+.login_btn:hover {
+  color: blue;
 }
 </style>
