@@ -65,7 +65,7 @@ npm run lint -- --fix
 ```
 #### 使用说明
 
-1.  $ git remote add origin https://[token]@github.com/1836388557/e-school.git   建立远端仓库链接
+1.  $ git remote add origin https://github.com/1836388557/e-school.git   建立远端仓库链接
         https://gitee.com/qaqshift/microServer  
 2.  $ git pull    从远端同步到本地 
 3.  $ git checkout -b dev    建立开发分支     
